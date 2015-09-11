@@ -9,8 +9,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 410520}
   - 212: {fileID: 21210520}
-  - 61: {fileID: 6133920}
-  - 114: {fileID: 11431888}
   m_Layer: 8
   m_Name: Wall2
   m_TagString: Untagged
@@ -30,34 +28,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!61 &6133920
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 110520}
-  m_Enabled: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1}
---- !u!114 &11431888
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 110520}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b55ebdc127da43ee9afaef098e22f35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chopSound1: {fileID: 8300000, guid: 4c2332bc8245b474dad63074059bb755, type: 3}
-  chopSound2: {fileID: 8300000, guid: f6aaac83be9e0493493aace800b76619, type: 3}
-  dmgSprite: {fileID: 21300098, guid: fbe1e7b94bb1a4a099d5bcb15a00141c, type: 3}
-  hp: 4
 --- !u!212 &21210520
 SpriteRenderer:
   m_ObjectHideFlags: 1
