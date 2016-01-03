@@ -37,4 +37,4 @@ Use of these assets is granted in the [Unity FAQ](http://unity3d.com/unity/faq):
 > all assets in our tutorial and example projects may be used in both commercial
 and non-commercial use in Unity-based projects. The assets themselves may not be resold, however.
 
-Full details can be found in the [LICENSE](license) file.
+Full details can be found in the [LICENSE](LICENSE) file.
