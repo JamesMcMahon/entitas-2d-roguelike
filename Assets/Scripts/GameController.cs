@@ -37,27 +37,27 @@ public class GameController : MonoBehaviour
 #endif
 
         systems
-            .Add(pool.CreateGameStartSystem())
-            .Add(pool.CreateGameOverSystem())
+            .Add(pool.CreateSystem<GameStartSystem>())
+            .Add(pool.CreateSystem<GameOverSystem>())
 
-            .Add(pool.CreateGameBoardCacheSystem())
-            .Add(pool.CreateCreateGameBoardSystem())
+            .Add(pool.CreateSystem<GameBoardCacheSystem>())
+            .Add(pool.CreateSystem<CreateGameBoardSystem>())
 
-            .Add(pool.CreateTurnSystem())
-            .Add(pool.CreateInputSystem())
-            .Add(pool.CreateAIMoveSystem())
+            .Add(pool.CreateSystem<TurnSystem>())
+            .Add(pool.CreateSystem<InputSystem>())
+            .Add(pool.CreateSystem<AIMoveSystem>())
 
-            .Add(pool.CreateExitSystem())
-            .Add(pool.CreateFoodSystem())
-            .Add(pool.CreateDestructibleSystem())
+            .Add(pool.CreateSystem<ExitSystem>())
+            .Add(pool.CreateSystem<FoodSystem>())
+            .Add(pool.CreateSystem<DestructibleSystem>())
 
             // Render
-            .Add(pool.CreateAnimationSystem())
-            .Add(pool.CreateDamageSpriteSystem())
-            .Add(pool.CreateRemoveViewSystem())
-            .Add(pool.CreateAddViewSystem())
-            .Add(pool.CreateRenderPositionSystem())
-            .Add(pool.CreateSmoothMoveSystem());
+            .Add(pool.CreateSystem<AnimationSystem>())
+            .Add(pool.CreateSystem<DamageSpriteSystem>())
+            .Add(pool.CreateSystem<RemoveViewSystem>())
+            .Add(pool.CreateSystem<AddViewSystem>())
+            .Add(pool.CreateSystem<RenderPositionSystem>())
+            .Add(pool.CreateSystem<SmoothMoveSystem>());
 
         return systems;
     }

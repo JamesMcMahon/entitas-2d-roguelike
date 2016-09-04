@@ -38,7 +38,7 @@ public class TurnSystem : IExecuteSystem, ISetPool
         }
 
         // delay the next entity becoming active
-        bool onlyEntity = turnBasedEntities.Count < 2;
+        bool onlyEntity = turnBasedEntities.count < 2;
         var delayTime = onlyEntity ?  baseDelay * 2 : baseDelay;
         timer.Add(delayTime, () =>
         {
