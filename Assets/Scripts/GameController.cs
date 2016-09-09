@@ -37,6 +37,7 @@ public class GameController : MonoBehaviour
 #endif
 
         systems
+            .Add(pool.CreateSystem<CoroutineSystem>())
             .Add(pool.CreateSystem<GameStartSystem>())
             .Add(pool.CreateSystem<GameOverSystem>())
 

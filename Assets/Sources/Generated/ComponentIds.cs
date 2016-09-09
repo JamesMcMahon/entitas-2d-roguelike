@@ -17,30 +17,31 @@ public static class ComponentIds {
     public const int AudioPickupSource = 7;
     public const int AudioWalkSource = 8;
     public const int Controllable = 9;
-    public const int DamageSprite = 10;
-    public const int DeleteOnExit = 11;
-    public const int Destructible = 12;
-    public const int Exit = 13;
-    public const int FoodBag = 14;
-    public const int Food = 15;
-    public const int FoodDamager = 16;
-    public const int GameBoardCache = 17;
-    public const int GameBoard = 18;
-    public const int GameBoardElement = 19;
-    public const int GameOver = 20;
-    public const int Level = 21;
-    public const int LevelTransitionDelay = 22;
-    public const int MoveInput = 23;
-    public const int NestedView = 24;
-    public const int Position = 25;
-    public const int Resource = 26;
-    public const int SkipTurn = 27;
-    public const int SmoothMove = 28;
-    public const int SmoothMoveInProgress = 29;
-    public const int TurnBased = 30;
-    public const int View = 31;
+    public const int Coroutine = 10;
+    public const int DamageSprite = 11;
+    public const int DeleteOnExit = 12;
+    public const int Destructible = 13;
+    public const int Exit = 14;
+    public const int FoodBag = 15;
+    public const int Food = 16;
+    public const int FoodDamager = 17;
+    public const int GameBoardCache = 18;
+    public const int GameBoard = 19;
+    public const int GameBoardElement = 20;
+    public const int GameOver = 21;
+    public const int Level = 22;
+    public const int LevelTransitionDelay = 23;
+    public const int MoveInput = 24;
+    public const int NestedView = 25;
+    public const int Position = 26;
+    public const int Resource = 27;
+    public const int SkipTurn = 28;
+    public const int SmoothMove = 29;
+    public const int SmoothMoveInProgress = 30;
+    public const int TurnBased = 31;
+    public const int View = 32;
 
-    public const int TotalComponents = 32;
+    public const int TotalComponents = 33;
 
     public static readonly string[] componentNames = {
         "ActiveTurnBased",
@@ -53,6 +54,7 @@ public static class ComponentIds {
         "AudioPickupSource",
         "AudioWalkSource",
         "Controllable",
+        "Coroutine",
         "DamageSprite",
         "DeleteOnExit",
         "Destructible",
@@ -88,6 +90,7 @@ public static class ComponentIds {
         typeof(AudioPickupSourceComponent),
         typeof(AudioWalkSourceComponent),
         typeof(ControllableComponent),
+        typeof(CoroutineComponent),
         typeof(DamageSpriteComponent),
         typeof(DeleteOnExitComponent),
         typeof(DestructibleComponent),

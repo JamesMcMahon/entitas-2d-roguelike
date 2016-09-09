@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class SmoothMoveSystem : IExecuteSystem, ISetPool
 {
-    CoroutineHandler coroutines = new CoroutineHandler();
+    Pool pool;
     Group smoothMoveGroup;
 
     void ISetPool.SetPool(Pool pool)
     {
+        this.pool = pool;
         smoothMoveGroup = pool.GetGroup(Matcher.AllOf(Matcher.View,
                                                       Matcher.Position,
                                                       Matcher.SmoothMove));
@@ -16,8 +17,6 @@ public class SmoothMoveSystem : IExecuteSystem, ISetPool
 
     void IExecuteSystem.Execute()
     {
-        coroutines.Update();
-
         var entities = smoothMoveGroup.GetEntities();
         foreach (var e in entities)
         {
@@ -31,14 +30,14 @@ public class SmoothMoveSystem : IExecuteSystem, ISetPool
             var viewPosition = e.view.gameObject.transform.position;
             if (position.x != viewPosition.x || position.y != viewPosition.y)
             {
-                coroutines.Add(SmoothMovement(e));
+                e.isSmoothMoveInProgress = true;
+                pool.CreateEntity().AddCoroutine(SmoothMovement(e));
             }
         }
     }
 
-    IEnumerator SmoothMovement(Entity entity)
+    static IEnumerator SmoothMovement(Entity entity)
     {
-        entity.isSmoothMoveInProgress = true;
         var gameObject = entity.view.gameObject;
         var transform = gameObject.transform;
         var rigidBody2d = gameObject.GetComponent<Rigidbody2D>();

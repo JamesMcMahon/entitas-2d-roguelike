@@ -4,6 +4,14 @@ using System.Collections.Generic;
 
 public static class PoolExtensions
 {
+    public static void DestroyEntityIfEmpty(this Pool pool, Entity entity)
+    {
+        if (entity.GetComponentIndices().Length == 0)
+        {
+            pool.DestroyEntity(entity);
+        }
+    }
+
     public static Entity PlayAudio(this Pool pool, AudioComponent source)
     {
         return pool.CreateEntity().AddAudio(source.clips, source.randomizePitch);
