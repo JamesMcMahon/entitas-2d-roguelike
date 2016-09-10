@@ -1,11 +1,15 @@
 ﻿using Entitas;
+using ICollectionExtensions;
+using LinkedListExtensions;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class TurnSystem : IMultiReactiveSystem, ISetPool
 {
-    NonContiguousData<Entity> indexedEntities = new NonContiguousData<Entity>();
+    LinkedList<Entity> turnOrder = new LinkedList<Entity>();
+    LinkedListNode<Entity> currentTurnNode;
     Pool pool;
     Group turnBasedEntities;
 
@@ -17,9 +21,9 @@ public class TurnSystem : IMultiReactiveSystem, ISetPool
         turnBasedEntities.OnEntityAdded += OnTurnBasedEntityAdded;
         turnBasedEntities.OnEntityRemoved += OnTurnBasedEntityRemoved;
 
-        // reset index when level is reset
+        // reset current node when level is reset
         pool.GetGroup(Matcher.LevelTransitionDelay).OnEntityRemoved += 
-            (group, entity, index, component) => indexedEntities.Reset();
+            (group, entity, index, component) => currentTurnNode = null;
     }
 
     TriggerOnEvent[] IMultiReactiveSystem.triggers
@@ -41,12 +45,15 @@ public class TurnSystem : IMultiReactiveSystem, ISetPool
             pool.isNextTurn = false;
         }
 
-        if (indexedEntities.Empty())
+        if (turnOrder.Empty())
         {
             return; // nothing to do
         }
 
-        var nextEntity = indexedEntities.Next();
+        currentTurnNode = currentTurnNode == null ?
+            turnOrder.First :
+            currentTurnNode.NextOrFirst();
+        var nextEntity = currentTurnNode.Value;
         // delay the next entity becoming active
         var baseDelay = nextEntity.turnBased.delay;
         bool onlyEntity = turnBasedEntities.count < 2;
@@ -58,13 +65,36 @@ public class TurnSystem : IMultiReactiveSystem, ISetPool
     void OnTurnBasedEntityAdded(Group group, Entity entity, int index,
                                 IComponent component)
     {
-        indexedEntities[entity.turnBased.index] = entity;
+        if (turnOrder.Empty())
+        {
+            turnOrder.AddFirst(entity);
+            return;
+        }
+
+        var newIndex = entity.turnBased.index;
+        var firstIndex = turnOrder.First.Value.turnBased.index;
+        if (firstIndex >= newIndex)
+        {
+            turnOrder.AddFirst(entity);
+            return;
+        }
+
+        var lastIndex = turnOrder.Last.Value.turnBased.index;
+        if (lastIndex <= newIndex)
+        {
+            turnOrder.AddLast(entity);
+            return;
+        }
+
+        var match = turnOrder.Nodes()
+            .FirstOrDefault(n => n.Next.Value.turnBased.index >= newIndex);
+        turnOrder.AddAfter(match, entity);
     }
 
     void OnTurnBasedEntityRemoved(Group group, Entity entity, int index,
                                   IComponent component)
     {
-        indexedEntities.Remove(((TurnBasedComponent)component).index);
+        turnOrder.Remove(entity);
     }
 
     IEnumerator ActivateAfterDelay(float delayTime, Entity nextEntity)
