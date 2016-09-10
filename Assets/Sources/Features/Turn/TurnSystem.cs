@@ -20,10 +20,6 @@ public class TurnSystem : IMultiReactiveSystem, ISetPool
         turnBasedEntities = pool.GetGroup(Matcher.TurnBased);
         turnBasedEntities.OnEntityAdded += OnTurnBasedEntityAdded;
         turnBasedEntities.OnEntityRemoved += OnTurnBasedEntityRemoved;
-
-        // reset current node when level is reset
-        pool.GetGroup(Matcher.LevelTransitionDelay).OnEntityRemoved += 
-            (group, entity, index, component) => currentTurnNode = null;
     }
 
     TriggerOnEvent[] IMultiReactiveSystem.triggers
@@ -94,7 +90,13 @@ public class TurnSystem : IMultiReactiveSystem, ISetPool
     void OnTurnBasedEntityRemoved(Group group, Entity entity, int index,
                                   IComponent component)
     {
-        turnOrder.Remove(entity);
+        // get previous node before removing node from list
+        var prevNode = currentTurnNode.PreviousOrLast();
+        var removed = turnOrder.Remove(entity);
+        if (removed && currentTurnNode != null && currentTurnNode.Value == entity)
+        {
+            currentTurnNode = prevNode.List == null ? null : prevNode;
+        }
     }
 
     IEnumerator ActivateAfterDelay(float delayTime, Entity nextEntity)
