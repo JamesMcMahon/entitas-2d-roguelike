@@ -97,6 +97,7 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
         }
 
         SetupScene(level);
+        pool.isNextTurn = true;
     }
 
     void SetupScene(int level)
@@ -153,7 +154,6 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
             .AddSmoothMove(0.1f)
             .IsControllable(true)
             .AddTurnBased(0, 0.1f)
-            .IsActiveTurnBased(true)
             .IsAIMoveTarget(true)
             .AddAudioAttackSource(Audio.scavengers_chop1, Audio.scavengers_chop2)
             .AddAudioDeathSource(Audio.scavengers_die)

@@ -47,9 +47,16 @@ public class NonContiguousData<T>
         return data.Remove(index);
     }
 
+    public void Reset()
+    {
+        index = 0;
+    }
+
     public T Next()
     {
-        return this[IncreaseIndex()];
+        var r = this[index];
+        IncreaseIndex();
+        return r;
     }
 
     int NextIndex()

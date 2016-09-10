@@ -1,12 +1,12 @@
 ﻿using Entitas;
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
-public class TurnSystem : IExecuteSystem, ISetPool
+public class TurnSystem : IMultiReactiveSystem, ISetPool
 {
     NonContiguousData<Entity> indexedEntities = new NonContiguousData<Entity>();
-    Entity nextEntity;
     Pool pool;
-    ActionTimer timer = new ActionTimer();
     Group turnBasedEntities;
 
     void ISetPool.SetPool(Pool pool)
@@ -16,38 +16,43 @@ public class TurnSystem : IExecuteSystem, ISetPool
         turnBasedEntities = pool.GetGroup(Matcher.TurnBased);
         turnBasedEntities.OnEntityAdded += OnTurnBasedEntityAdded;
         turnBasedEntities.OnEntityRemoved += OnTurnBasedEntityRemoved;
+
+        // reset index when level is reset
+        pool.GetGroup(Matcher.LevelTransitionDelay).OnEntityRemoved += 
+            (group, entity, index, component) => indexedEntities.Reset();
     }
 
-    void IExecuteSystem.Execute()
+    TriggerOnEvent[] IMultiReactiveSystem.triggers
     {
-        timer.Tick(Time.deltaTime);
+        get
+        {
+            return new []
+            {
+                Matcher.ActiveTurnBased.OnEntityRemoved(),
+                Matcher.NextTurn.OnEntityAdded()
+            };
+        }
+    }
 
-        if (!timer.Done || pool.isActiveTurnBased || indexedEntities.Empty())
+    void IReactiveExecuteSystem.Execute(List<Entity> entities)
+    {
+        if (pool.isNextTurn)
+        {
+            pool.isNextTurn = false;
+        }
+
+        if (indexedEntities.Empty())
         {
             return; // nothing to do
         }
 
-        nextEntity = indexedEntities.Next();
-        var baseDelay = nextEntity.turnBased.delay;
-        if (nextEntity.isSkipTurn)
-        {
-            // skip next turn but still fire delay timer to replicate
-            // functionality of original game
-            nextEntity.isSkipTurn = false;
-            nextEntity = null;
-        }
-
+        var nextEntity = indexedEntities.Next();
         // delay the next entity becoming active
+        var baseDelay = nextEntity.turnBased.delay;
         bool onlyEntity = turnBasedEntities.count < 2;
-        var delayTime = onlyEntity ?  baseDelay * 2 : baseDelay;
-        timer.Add(delayTime, () =>
-        {
-            if (nextEntity != null)
-            {
-                nextEntity.isActiveTurnBased = true;
-                nextEntity = null;
-            }
-        });
+        var delayTime = onlyEntity ? baseDelay * 2 : baseDelay;
+        pool.CreateEntity()
+            .AddCoroutine(ActivateAfterDelay(delayTime, nextEntity));
     }
 
     void OnTurnBasedEntityAdded(Group group, Entity entity, int index,
@@ -60,5 +65,26 @@ public class TurnSystem : IExecuteSystem, ISetPool
                                   IComponent component)
     {
         indexedEntities.Remove(((TurnBasedComponent)component).index);
+    }
+
+    IEnumerator ActivateAfterDelay(float delayTime, Entity nextEntity)
+    {
+        var timer = delayTime;
+        while (timer > 0)
+        {
+            timer -= Time.deltaTime;
+            yield return null;
+        }
+
+        if (nextEntity.isSkipTurn)
+        {
+            // skip over but make sure that the turn system is retriggered
+            nextEntity.isSkipTurn = false;
+            pool.isNextTurn = true;
+        }
+        else
+        {
+            nextEntity.isActiveTurnBased = true;
+        }
     }
 }

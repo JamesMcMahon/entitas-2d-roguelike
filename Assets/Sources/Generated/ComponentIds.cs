@@ -33,15 +33,16 @@ public static class ComponentIds {
     public const int LevelTransitionDelay = 23;
     public const int MoveInput = 24;
     public const int NestedView = 25;
-    public const int Position = 26;
-    public const int Resource = 27;
-    public const int SkipTurn = 28;
-    public const int SmoothMove = 29;
-    public const int SmoothMoveInProgress = 30;
-    public const int TurnBased = 31;
-    public const int View = 32;
+    public const int NextTurn = 26;
+    public const int Position = 27;
+    public const int Resource = 28;
+    public const int SkipTurn = 29;
+    public const int SmoothMove = 30;
+    public const int SmoothMoveInProgress = 31;
+    public const int TurnBased = 32;
+    public const int View = 33;
 
-    public const int TotalComponents = 33;
+    public const int TotalComponents = 34;
 
     public static readonly string[] componentNames = {
         "ActiveTurnBased",
@@ -70,6 +71,7 @@ public static class ComponentIds {
         "LevelTransitionDelay",
         "MoveInput",
         "NestedView",
+        "NextTurn",
         "Position",
         "Resource",
         "SkipTurn",
@@ -106,6 +108,7 @@ public static class ComponentIds {
         typeof(LevelTransitionDelayComponent),
         typeof(MoveInputComponent),
         typeof(NestedViewComponent),
+        typeof(NextTurnComponent),
         typeof(PositionComponent),
         typeof(ResourceComponent),
         typeof(SkipTurnComponent),
