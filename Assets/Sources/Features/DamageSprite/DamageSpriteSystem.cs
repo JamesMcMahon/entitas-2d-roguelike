@@ -44,19 +44,17 @@ public class DamageSpriteSystem : ISetPool, IReactiveSystem, IInitializeSystem
             var gameObject = e.view.gameObject;
             var spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
-            if (spriteRenderer != null)
+            if (spriteRenderer != null &&
+                spriteRenderer.sprite.name != e.damageSprite.name)
             {
-                if (spriteRenderer.sprite.name != e.damageSprite.name)
+                UnityEngine.Sprite sprite;
+                bool available = spriteCache.TryGetValue(e.damageSprite.name, out sprite);
+                if (available)
                 {
-                    UnityEngine.Sprite sprite;
-                    bool available = spriteCache.TryGetValue(e.damageSprite.name, out sprite);
-                    if (available)
-                    {
-                        spriteRenderer.sprite = sprite;
-                    }
-                    // no need to use this anymore so remove it
-                    e.RemoveDamageSprite();
+                    spriteRenderer.sprite = sprite;
                 }
+                // no need to use this anymore so remove it
+                e.RemoveDamageSprite();
             }
         }
     }
