@@ -29,20 +29,21 @@ public static class ComponentIds {
     public const int GameBoard = 19;
     public const int GameBoardElement = 20;
     public const int GameOver = 21;
-    public const int Level = 22;
-    public const int LevelTransitionDelay = 23;
-    public const int MoveInput = 24;
-    public const int NestedView = 25;
-    public const int NextTurn = 26;
-    public const int Position = 27;
-    public const int Resource = 28;
-    public const int SkipTurn = 29;
-    public const int SmoothMove = 30;
-    public const int SmoothMoveInProgress = 31;
-    public const int TurnBased = 32;
-    public const int View = 33;
+    public const int GridPositions = 22;
+    public const int Level = 23;
+    public const int LevelTransitionDelay = 24;
+    public const int MoveInput = 25;
+    public const int NestedView = 26;
+    public const int NextTurn = 27;
+    public const int Position = 28;
+    public const int Resource = 29;
+    public const int SkipTurn = 30;
+    public const int SmoothMove = 31;
+    public const int SmoothMoveInProgress = 32;
+    public const int TurnBased = 33;
+    public const int View = 34;
 
-    public const int TotalComponents = 34;
+    public const int TotalComponents = 35;
 
     public static readonly string[] componentNames = {
         "ActiveTurnBased",
@@ -67,6 +68,7 @@ public static class ComponentIds {
         "GameBoard",
         "GameBoardElement",
         "GameOver",
+        "GridPositions",
         "Level",
         "LevelTransitionDelay",
         "MoveInput",
@@ -104,6 +106,7 @@ public static class ComponentIds {
         typeof(GameBoardComponent),
         typeof(GameBoardElementComponent),
         typeof(GameOverComponent),
+        typeof(GridPositionsComponent),
         typeof(LevelComponent),
         typeof(LevelTransitionDelayComponent),
         typeof(MoveInputComponent),

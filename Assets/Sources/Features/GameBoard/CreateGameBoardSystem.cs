@@ -65,7 +65,6 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
 
     Pool pool;
     Group deleteOnExitGroup;
-    List<Vector2> gridPositions = new List<Vector2>();
 
     TriggerOnEvent IReactiveSystem.trigger
     {
@@ -82,6 +81,7 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
     {
         Debug.Log("Create GameBoard");
 
+        pool.CreateEntity().AddGridPositions(new List<Vector2>());
         pool.SetGameBoard(COLUMNS, ROWS);
         pool.SetLevel(1);
     }
@@ -179,6 +179,7 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
 
     void InitialiseList()
     {
+        var gridPositions = pool.gridPositions.value;
         gridPositions.Clear();
 
         // start at 1 to avoid placing items along the edges
@@ -194,7 +195,9 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
     void LayoutObjectAtRandom(Prefab[] tileArray, int min, int max,
                               Action<Entity, int, int> postProcess)
     {
+        var gridPositions = pool.gridPositions.value;
         int objectCount = UnityEngine.Random.Range(min, max + 1);
+
         for (int i = 0; i < objectCount; i++)
         {
             int randomIndex = gridPositions.RandomIndex();
