@@ -27,3 +27,7 @@ Assets/UnityVS/
 
 # Vim
 *.swp
+
+# Local plugins
+Assets/Local/
+Assets/Local.meta
