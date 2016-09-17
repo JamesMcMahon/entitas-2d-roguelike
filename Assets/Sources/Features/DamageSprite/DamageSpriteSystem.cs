@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DamageSpriteSystem : IReactiveSystem, IInitializeSystem
+public class DamageSpriteSystem : ISetPool, IReactiveSystem, IInitializeSystem
 {
-    Dictionary<string, UnityEngine.Sprite> spriteCache = new Dictionary<string, UnityEngine.Sprite>();
+    Pool pool;
 
     TriggerOnEvent IReactiveSystem.trigger
     {
@@ -15,17 +15,25 @@ public class DamageSpriteSystem : IReactiveSystem, IInitializeSystem
         }
     }
 
+    void ISetPool.SetPool(Pool pool)
+    {
+        this.pool = pool;
+    }
+
     void IInitializeSystem.Initialize()
     {
         UnityEngine.Sprite[] sprites = Resources.LoadAll<UnityEngine.Sprite>("Sprites");
+        var spriteCache = new Dictionary<string, UnityEngine.Sprite>();
         foreach (var s in sprites)
         {
             spriteCache.Add(s.name, s);
         }
+        pool.CreateEntity().AddSpriteCache(spriteCache);
     }
 
     void IReactiveExecuteSystem.Execute(List<Entity> entities)
     {
+        var spriteCache = pool.spriteCache.value;
         foreach (var e in entities)
         {
             if (!e.destructible.IsDamaged)

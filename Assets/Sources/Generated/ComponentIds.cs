@@ -42,12 +42,13 @@ public static class ComponentIds {
     public const int SkipTurn = 32;
     public const int SmoothMove = 33;
     public const int SmoothMoveInProgress = 34;
-    public const int TurnBased = 35;
-    public const int TurnOrder = 36;
-    public const int View = 37;
-    public const int ViewContainer = 38;
+    public const int SpriteCache = 35;
+    public const int TurnBased = 36;
+    public const int TurnOrder = 37;
+    public const int View = 38;
+    public const int ViewContainer = 39;
 
-    public const int TotalComponents = 39;
+    public const int TotalComponents = 40;
 
     public static readonly string[] componentNames = {
         "ActiveTurnBased",
@@ -85,6 +86,7 @@ public static class ComponentIds {
         "SkipTurn",
         "SmoothMove",
         "SmoothMoveInProgress",
+        "SpriteCache",
         "TurnBased",
         "TurnOrder",
         "View",
@@ -127,6 +129,7 @@ public static class ComponentIds {
         typeof(SkipTurnComponent),
         typeof(SmoothMoveComponent),
         typeof(SmoothMoveInProgressComponent),
+        typeof(SpriteCacheComponent),
         typeof(TurnBasedComponent),
         typeof(TurnOrderComponent),
         typeof(ViewComponent),
