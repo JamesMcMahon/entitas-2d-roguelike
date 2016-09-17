@@ -3,19 +3,46 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AddViewSystem : IReactiveSystem
+public class AddViewSystem : ISetPool, IInitializeSystem, IReactiveSystem
 {
-    Dictionary<string, Transform> nestedViewContainers = new Dictionary<string, Transform>();
+    static Transform GetNested(string name,
+                               Transform viewContainer,
+                               IDictionary<string, Transform> nestedViewContainer)
+    {
+        if (nestedViewContainer.ContainsKey(name))
+        {
+            return nestedViewContainer[name];
+        }
+
+        var nestedView = new GameObject(name).transform;
+        nestedView.SetParent(viewContainer, false);
+        nestedViewContainer[name] = nestedView;
+        return nestedView;
+    }
+
+    Pool pool;
+
+    void ISetPool.SetPool(Pool pool)
+    {
+        this.pool = pool;
+    }
 
     TriggerOnEvent IReactiveSystem.trigger
     {
         get { return Matcher.Resource.OnEntityAdded(); }
     }
 
-    readonly Transform viewContainer = new GameObject("Views").transform;
+    void IInitializeSystem.Initialize()
+    {
+        pool.CreateEntity().AddViewContainer(new GameObject("Views").transform);
+        pool.CreateEntity().AddNestedViewContainer(new Dictionary<string, Transform>());
+    }
 
     void IReactiveExecuteSystem.Execute(List<Entity> entities)
     {
+        var viewContainer = pool.viewContainer.value;
+        var nestedViewContainer = pool.nestedViewContainer.value;
+
         foreach (var e in entities)
         {
             var resName = "Prefabs/" + e.resource.name;
@@ -34,7 +61,9 @@ public class AddViewSystem : IReactiveSystem
                 continue;
             }
 
-            var parent = e.hasNestedView ? GetNested(e.nestedView.name) : viewContainer;
+            var parent = e.hasNestedView ?
+                GetNested(e.nestedView.name, viewContainer, nestedViewContainer) :
+                viewContainer;
             gameObject.transform.SetParent(parent, false);
             e.AddView(gameObject);
 
@@ -44,18 +73,5 @@ public class AddViewSystem : IReactiveSystem
                 gameObject.transform.position = new Vector3(pos.x, pos.y, 0f);
             }
         }
-    }
-
-    Transform GetNested(string name)
-    {
-        if (nestedViewContainers.ContainsKey(name))
-        {
-            return nestedViewContainers[name];
-        }
-
-        var nestedView = new GameObject(name).transform;
-        nestedView.SetParent(viewContainer, false);
-        nestedViewContainers[name] = nestedView;
-        return nestedView;
     }
 }

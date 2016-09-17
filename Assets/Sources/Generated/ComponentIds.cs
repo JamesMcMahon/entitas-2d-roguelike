@@ -34,16 +34,18 @@ public static class ComponentIds {
     public const int LevelTransitionDelay = 24;
     public const int MoveInput = 25;
     public const int NestedView = 26;
-    public const int NextTurn = 27;
-    public const int Position = 28;
-    public const int Resource = 29;
-    public const int SkipTurn = 30;
-    public const int SmoothMove = 31;
-    public const int SmoothMoveInProgress = 32;
-    public const int TurnBased = 33;
-    public const int View = 34;
+    public const int NestedViewContainer = 27;
+    public const int NextTurn = 28;
+    public const int Position = 29;
+    public const int Resource = 30;
+    public const int SkipTurn = 31;
+    public const int SmoothMove = 32;
+    public const int SmoothMoveInProgress = 33;
+    public const int TurnBased = 34;
+    public const int View = 35;
+    public const int ViewContainer = 36;
 
-    public const int TotalComponents = 35;
+    public const int TotalComponents = 37;
 
     public static readonly string[] componentNames = {
         "ActiveTurnBased",
@@ -73,6 +75,7 @@ public static class ComponentIds {
         "LevelTransitionDelay",
         "MoveInput",
         "NestedView",
+        "NestedViewContainer",
         "NextTurn",
         "Position",
         "Resource",
@@ -80,7 +83,8 @@ public static class ComponentIds {
         "SmoothMove",
         "SmoothMoveInProgress",
         "TurnBased",
-        "View"
+        "View",
+        "ViewContainer"
     };
 
     public static readonly System.Type[] componentTypes = {
@@ -111,6 +115,7 @@ public static class ComponentIds {
         typeof(LevelTransitionDelayComponent),
         typeof(MoveInputComponent),
         typeof(NestedViewComponent),
+        typeof(NestedViewContainerComponent),
         typeof(NextTurnComponent),
         typeof(PositionComponent),
         typeof(ResourceComponent),
@@ -118,6 +123,7 @@ public static class ComponentIds {
         typeof(SmoothMoveComponent),
         typeof(SmoothMoveInProgressComponent),
         typeof(TurnBasedComponent),
-        typeof(ViewComponent)
+        typeof(ViewComponent),
+        typeof(ViewContainerComponent)
     };
 }
