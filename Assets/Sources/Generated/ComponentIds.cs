@@ -18,34 +18,36 @@ public static class ComponentIds {
     public const int AudioWalkSource = 8;
     public const int Controllable = 9;
     public const int Coroutine = 10;
-    public const int DamageSprite = 11;
-    public const int DeleteOnExit = 12;
-    public const int Destructible = 13;
-    public const int Exit = 14;
-    public const int FoodBag = 15;
-    public const int Food = 16;
-    public const int FoodDamager = 17;
-    public const int GameBoardCache = 18;
-    public const int GameBoard = 19;
-    public const int GameBoardElement = 20;
-    public const int GameOver = 21;
-    public const int GridPositions = 22;
-    public const int Level = 23;
-    public const int LevelTransitionDelay = 24;
-    public const int MoveInput = 25;
-    public const int NestedView = 26;
-    public const int NestedViewContainer = 27;
-    public const int NextTurn = 28;
-    public const int Position = 29;
-    public const int Resource = 30;
-    public const int SkipTurn = 31;
-    public const int SmoothMove = 32;
-    public const int SmoothMoveInProgress = 33;
-    public const int TurnBased = 34;
-    public const int View = 35;
-    public const int ViewContainer = 36;
+    public const int CurrentTurnNode = 11;
+    public const int DamageSprite = 12;
+    public const int DeleteOnExit = 13;
+    public const int Destructible = 14;
+    public const int Exit = 15;
+    public const int FoodBag = 16;
+    public const int Food = 17;
+    public const int FoodDamager = 18;
+    public const int GameBoardCache = 19;
+    public const int GameBoard = 20;
+    public const int GameBoardElement = 21;
+    public const int GameOver = 22;
+    public const int GridPositions = 23;
+    public const int Level = 24;
+    public const int LevelTransitionDelay = 25;
+    public const int MoveInput = 26;
+    public const int NestedView = 27;
+    public const int NestedViewContainer = 28;
+    public const int NextTurn = 29;
+    public const int Position = 30;
+    public const int Resource = 31;
+    public const int SkipTurn = 32;
+    public const int SmoothMove = 33;
+    public const int SmoothMoveInProgress = 34;
+    public const int TurnBased = 35;
+    public const int TurnOrder = 36;
+    public const int View = 37;
+    public const int ViewContainer = 38;
 
-    public const int TotalComponents = 37;
+    public const int TotalComponents = 39;
 
     public static readonly string[] componentNames = {
         "ActiveTurnBased",
@@ -59,6 +61,7 @@ public static class ComponentIds {
         "AudioWalkSource",
         "Controllable",
         "Coroutine",
+        "CurrentTurnNode",
         "DamageSprite",
         "DeleteOnExit",
         "Destructible",
@@ -83,6 +86,7 @@ public static class ComponentIds {
         "SmoothMove",
         "SmoothMoveInProgress",
         "TurnBased",
+        "TurnOrder",
         "View",
         "ViewContainer"
     };
@@ -99,6 +103,7 @@ public static class ComponentIds {
         typeof(AudioWalkSourceComponent),
         typeof(ControllableComponent),
         typeof(CoroutineComponent),
+        typeof(CurrentTurnNodeComponent),
         typeof(DamageSpriteComponent),
         typeof(DeleteOnExitComponent),
         typeof(DestructibleComponent),
@@ -123,6 +128,7 @@ public static class ComponentIds {
         typeof(SmoothMoveComponent),
         typeof(SmoothMoveInProgressComponent),
         typeof(TurnBasedComponent),
+        typeof(TurnOrderComponent),
         typeof(ViewComponent),
         typeof(ViewContainerComponent)
     };

@@ -6,10 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class TurnSystem : IMultiReactiveSystem, ISetPool
+public class TurnSystem : IInitializeSystem, IMultiReactiveSystem, ISetPool
 {
-    LinkedList<Entity> turnOrder = new LinkedList<Entity>();
-    LinkedListNode<Entity> currentTurnNode;
     Pool pool;
     Group turnBasedEntities;
 
@@ -20,6 +18,11 @@ public class TurnSystem : IMultiReactiveSystem, ISetPool
         turnBasedEntities = pool.GetGroup(Matcher.TurnBased);
         turnBasedEntities.OnEntityAdded += OnTurnBasedEntityAdded;
         turnBasedEntities.OnEntityRemoved += OnTurnBasedEntityRemoved;
+    }
+
+    void IInitializeSystem.Initialize()
+    {
+        pool.CreateEntity().AddTurnOrder(new LinkedList<Entity>());
     }
 
     TriggerOnEvent[] IMultiReactiveSystem.triggers
@@ -41,15 +44,22 @@ public class TurnSystem : IMultiReactiveSystem, ISetPool
             pool.isNextTurn = false;
         }
 
+        var turnOrder = pool.turnOrder.value;
         if (turnOrder.Empty())
         {
             return; // nothing to do
         }
 
-        currentTurnNode = currentTurnNode == null ?
-            turnOrder.First :
-            currentTurnNode.NextOrFirst();
-        var nextEntity = currentTurnNode.Value;
+        if (pool.hasCurrentTurnNode)
+        {
+            pool.ReplaceCurrentTurnNode(pool.currentTurnNode.value.NextOrFirst());
+        }
+        else
+        {
+            pool.CreateEntity().AddCurrentTurnNode(turnOrder.First);
+        }
+
+        var nextEntity = pool.currentTurnNode.value.Value;
         // delay the next entity becoming active
         var baseDelay = nextEntity.turnBased.delay;
         bool onlyEntity = turnBasedEntities.count < 2;
@@ -61,6 +71,7 @@ public class TurnSystem : IMultiReactiveSystem, ISetPool
     void OnTurnBasedEntityAdded(Group group, Entity entity, int index,
                                 IComponent component)
     {
+        var turnOrder = pool.turnOrder.value;
         if (turnOrder.Empty())
         {
             turnOrder.AddFirst(entity);
@@ -91,11 +102,19 @@ public class TurnSystem : IMultiReactiveSystem, ISetPool
                                   IComponent component)
     {
         // get previous node before removing node from list
+        var currentTurnNode = pool.currentTurnNode.value;
         var prevNode = currentTurnNode.PreviousOrLast();
-        var removed = turnOrder.Remove(entity);
+        var removed = pool.turnOrder.value.Remove(entity);
         if (removed && currentTurnNode != null && currentTurnNode.Value == entity)
         {
-            currentTurnNode = prevNode.List == null ? null : prevNode;
+            if (prevNode.List == null)
+            {
+                pool.RemoveCurrentTurnNode();
+            }
+            else
+            {
+                pool.ReplaceCurrentTurnNode(prevNode);
+            }
         }
     }
 
