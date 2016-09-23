@@ -10,6 +10,7 @@ public class ConfigComponent : IComponent
     public int foodCountMax;
     public int wallCountMin;
     public int wallCountMax;
+    public int enemyCountMultiplier;
     public int foodPoints;
     public int sodaPoints;
     public int enemy1Dmg;

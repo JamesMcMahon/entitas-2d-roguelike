@@ -19,6 +19,7 @@ public class GameStartSystem : IInitializeSystem, ISetPool
             DefaultConfigConstants.FOOD_COUNT_MAX,
             DefaultConfigConstants.WALL_COUNT_MIN,
             DefaultConfigConstants.WALL_COUNT_MAX,
+            DefaultConfigConstants.ENEMY_COUNT_MULTIPLIER,
             DefaultConfigConstants.FOOD_POINTS,
             DefaultConfigConstants.SODA_POINTS,
             DefaultConfigConstants.ENEMY1_DMG,

@@ -123,7 +123,7 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
             e.AddFood(points).AddAudioPickupSource(audio);
         });
 
-        int enemyCount = (int)Mathf.Log(level, 2f);
+        int enemyCount = Mathf.FloorToInt(Mathf.Log(level, 2f)) * config.enemyCountMultiplier;
         LayoutObjectAtRandom(ENEMIES, enemyCount, enemyCount, (e, i, ri) =>
         {
             bool enemy1 = e.resource.prefab == Prefab.Enemy1;
