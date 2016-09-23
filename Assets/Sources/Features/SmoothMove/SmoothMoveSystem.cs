@@ -31,7 +31,7 @@ public class SmoothMoveSystem : IExecuteSystem, ISetPool
             if (position.x != viewPosition.x || position.y != viewPosition.y)
             {
                 e.isSmoothMoveInProgress = true;
-                pool.CreateEntity().AddCoroutine(SmoothMovement(e));
+                e.AddCoroutine(SmoothMovement(e));
             }
         }
     }
