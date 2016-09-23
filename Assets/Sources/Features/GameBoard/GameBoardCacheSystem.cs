@@ -12,13 +12,9 @@ public class GameBoardCacheSystem : ISystem, ISetPool
 
         var gameBoard = pool.GetGroup(Matcher.GameBoard);
         gameBoard.OnEntityAdded += (group, entity, index, component) =>
-        {
             CreateNewGameBoardCache((GameBoardComponent)component);
-        };
         gameBoard.OnEntityUpdated += (group, entity, index, previousComponent, newComponent) =>
-        {
             CreateNewGameBoardCache((GameBoardComponent)newComponent);
-        };
 
         var gameBoardElements = pool.GetGroup(Matcher.AllOf(Matcher.GameBoardElement, Matcher.Position));
         gameBoardElements.OnEntityAdded += OnGameBoardElementAdded;
