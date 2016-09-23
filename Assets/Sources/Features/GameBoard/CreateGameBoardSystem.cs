@@ -98,11 +98,18 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
     {
         Debug.Log("Setup level " + level);
 
+        var config = pool.config;
         var gameBoard = pool.gameBoard;
+        if (config.columns != gameBoard.columns || config.rows != gameBoard.rows)
+        {
+            // Update gameboard to match the current config
+            var gameBoardEntity = pool.ReplaceGameBoard(config.columns, config.rows);
+            gameBoard = gameBoardEntity.gameBoard;
+        }
+
         //Creates the outer walls and floor.
         BoardSetup(gameBoard);
         InitialiseList(gameBoard);
-        var config = pool.config;
 
         LayoutObjectAtRandom(WALLS, config.wallCountMin, config.wallCountMax, (e, i, ri) =>
             e.AddDestructible(4).AddDamageSprite(DAMAGED_WALLS[ri]));
