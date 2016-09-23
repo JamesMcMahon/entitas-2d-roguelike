@@ -109,7 +109,7 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
 
         //Creates the outer walls and floor.
         BoardSetup(gameBoard);
-        InitialiseList(gameBoard);
+        ResetGridPositions(gameBoard);
 
         LayoutObjectAtRandom(WALLS, config.wallCountMin, config.wallCountMax, (e, i, ri) =>
             e.AddDestructible(4).AddDamageSprite(DAMAGED_WALLS[ri]));
@@ -178,7 +178,7 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
         }
     }
 
-    void InitialiseList(GameBoardComponent gameBoard)
+    void ResetGridPositions(GameBoardComponent gameBoard)
     {
         var gridPositions = pool.gridPositions.value;
         gridPositions.Clear();
