@@ -74,7 +74,7 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
     {
         Debug.Log("Create GameBoard");
 
-        pool.CreateEntity().AddGridPositions(new List<Vector2>());
+        pool.SetGridPositions(new List<Vector2>());
         var config = pool.config;
         pool.SetGameBoard(config.columns, config.rows);
         pool.SetLevel(1);

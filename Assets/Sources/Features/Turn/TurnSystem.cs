@@ -22,7 +22,7 @@ public class TurnSystem : IInitializeSystem, IMultiReactiveSystem, ISetPool
 
     void IInitializeSystem.Initialize()
     {
-        pool.CreateEntity().AddTurnOrder(new LinkedList<Entity>());
+        pool.SetTurnOrder(new LinkedList<Entity>());
     }
 
     TriggerOnEvent[] IMultiReactiveSystem.triggers
@@ -56,7 +56,7 @@ public class TurnSystem : IInitializeSystem, IMultiReactiveSystem, ISetPool
         }
         else
         {
-            pool.CreateEntity().AddCurrentTurnNode(turnOrder.First);
+            pool.SetCurrentTurnNode(turnOrder.First);
         }
 
         var nextEntity = pool.currentTurnNode.value.Value;

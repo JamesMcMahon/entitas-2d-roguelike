@@ -28,7 +28,7 @@ public class DamageSpriteSystem : ISetPool, IReactiveSystem, IInitializeSystem
         {
             spriteCache.Add(s.name, s);
         }
-        pool.CreateEntity().AddSpriteCache(spriteCache);
+        pool.SetSpriteCache(spriteCache);
     }
 
     void IReactiveExecuteSystem.Execute(List<Entity> entities)

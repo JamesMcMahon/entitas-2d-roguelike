@@ -34,8 +34,8 @@ public class AddViewSystem : ISetPool, IInitializeSystem, IReactiveSystem
 
     void IInitializeSystem.Initialize()
     {
-        pool.CreateEntity().AddViewContainer(new GameObject("Views").transform);
-        pool.CreateEntity().AddNestedViewContainer(new Dictionary<string, Transform>());
+        pool.SetViewContainer(new GameObject("Views").transform);
+        pool.SetNestedViewContainer(new Dictionary<string, Transform>());
     }
 
     void IReactiveExecuteSystem.Execute(List<Entity> entities)
