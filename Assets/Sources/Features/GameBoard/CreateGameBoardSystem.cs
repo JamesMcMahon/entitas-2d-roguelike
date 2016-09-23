@@ -118,8 +118,8 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
             bool soda = e.resource.prefab == Prefab.Soda;
             int points = soda ? config.sodaPoints : config.foodPoints;
             var audio = soda ?
-                new Audio[] { Audio.scavengers_soda1, Audio.scavengers_soda2 } :
-                new Audio[] { Audio.scavengers_fruit1, Audio.scavengers_fruit2 };
+                new [] { Audio.scavengers_soda1, Audio.scavengers_soda2 } :
+                new [] { Audio.scavengers_fruit1, Audio.scavengers_fruit2 };
             e.AddFood(points).AddAudioPickupSource(audio);
         });
 
