@@ -6,13 +6,6 @@ using UnityEngine;
 
 public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPool
 {
-    const int COLUMNS = 8;
-    const int ROWS = 8;
-    const int FOOD_COUNT_MIN = 1;
-    const int FOOD_COUNT_MAX = 5;
-    const int WALL_COUNT_MIN = 5;
-    const int WALL_COUNT_MAX = 9;
-
     static readonly Prefab[] ENEMIES =
     {
         Prefab.Enemy1,
@@ -82,7 +75,8 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
         Debug.Log("Create GameBoard");
 
         pool.CreateEntity().AddGridPositions(new List<Vector2>());
-        pool.SetGameBoard(COLUMNS, ROWS);
+        var config = pool.config;
+        pool.SetGameBoard(config.columns, config.rows);
         pool.SetLevel(1);
     }
 
@@ -104,19 +98,18 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
     {
         Debug.Log("Setup level " + level);
 
+        var gameBoard = pool.gameBoard;
         //Creates the outer walls and floor.
-        BoardSetup();
+        BoardSetup(gameBoard);
+        InitialiseList(gameBoard);
+        var config = pool.config;
 
-        InitialiseList();
-        LayoutObjectAtRandom(WALLS, WALL_COUNT_MIN, WALL_COUNT_MAX, (e, i, ri) =>
-        {
-            e.AddDestructible(4)
-             .AddDamageSprite(DAMAGED_WALLS[ri]);
-        });
-        LayoutObjectAtRandom(FOOD, FOOD_COUNT_MIN, FOOD_COUNT_MAX, (e, i, ri) =>
+        LayoutObjectAtRandom(WALLS, config.wallCountMin, config.wallCountMax, (e, i, ri) =>
+            e.AddDestructible(4).AddDamageSprite(DAMAGED_WALLS[ri]));
+        LayoutObjectAtRandom(FOOD, config.foodCountMin, config.foodCountMax, (e, i, ri) =>
         {
             bool soda = e.resource.prefab == Prefab.Soda;
-            int points = soda ? SharedConstants.SODA_POINTS : SharedConstants.FOOD_POINTS;
+            int points = soda ? config.sodaPoints : config.foodPoints;
             var audio = soda ?
                 new Audio[] { Audio.scavengers_soda1, Audio.scavengers_soda2 } :
                 new Audio[] { Audio.scavengers_fruit1, Audio.scavengers_fruit2 };
@@ -127,7 +120,7 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
         LayoutObjectAtRandom(ENEMIES, enemyCount, enemyCount, (e, i, ri) =>
         {
             bool enemy1 = e.resource.prefab == Prefab.Enemy1;
-            int dmg = enemy1 ? SharedConstants.ENEMY1_DMG : SharedConstants.ENEMY2_DMG;
+            int dmg = enemy1 ? config.enemy1Dmg : config.enemy2Dmg;
 
             // start at 1 because 0 is reserved for player
             e.AddTurnBased(i + 1, 0.1f)
@@ -143,7 +136,7 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
             .IsExit(true)
             .IsGameBoardElement(true)
             .IsDeleteOnExit(true)
-            .AddPosition(COLUMNS - 1, ROWS - 1);
+            .AddPosition(gameBoard.columns - 1, gameBoard.rows - 1);
 
         // Create player
         pool.CreateEntity()
@@ -160,14 +153,15 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
             .AddAudioWalkSource(Audio.scavengers_footstep1, Audio.scavengers_footstep2);
     }
 
-    void BoardSetup()
+    void BoardSetup(GameBoardComponent gameBoard)
     {
         // start at negative 1 to place outer edges
-        for (int x = -1; x <= COLUMNS; x++)
+        for (int x = -1; x <= gameBoard.columns; x++)
         {
-            for (int y = -1; y <= ROWS; y++)
+            for (int y = -1; y <= gameBoard.rows; y++)
             {
-                bool edge = x == -1 || x == COLUMNS || y == -1 || y == ROWS;
+                bool edge = x == -1 || x == gameBoard.columns ||
+                            y == -1 || y == gameBoard.rows;
                 Prefab prefab = edge ? OUTERWALLS.Random() : FLOORS.Random();
                 pool.CreateEntity().AddPosition(x, y)
                                    .AddResource(prefab)
@@ -177,15 +171,15 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
         }
     }
 
-    void InitialiseList()
+    void InitialiseList(GameBoardComponent gameBoard)
     {
         var gridPositions = pool.gridPositions.value;
         gridPositions.Clear();
 
         // start at 1 to avoid placing items along the edges
-        for (int x = 1; x < COLUMNS - 1; x++)
+        for (int x = 1; x < gameBoard.columns - 1; x++)
         {
-            for (int y = 1; y < ROWS - 1; y++)
+            for (int y = 1; y < gameBoard.rows - 1; y++)
             {
                 gridPositions.Add(new Vector2(x, y));
             }

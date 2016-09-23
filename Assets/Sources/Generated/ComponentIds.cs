@@ -16,39 +16,40 @@ public static class ComponentIds {
     public const int AudioDeathSource = 6;
     public const int AudioPickupSource = 7;
     public const int AudioWalkSource = 8;
-    public const int Controllable = 9;
-    public const int Coroutine = 10;
-    public const int CurrentTurnNode = 11;
-    public const int DamageSprite = 12;
-    public const int DeleteOnExit = 13;
-    public const int Destructible = 14;
-    public const int Exit = 15;
-    public const int FoodBag = 16;
-    public const int Food = 17;
-    public const int FoodDamager = 18;
-    public const int GameBoardCache = 19;
-    public const int GameBoard = 20;
-    public const int GameBoardElement = 21;
-    public const int GameOver = 22;
-    public const int GridPositions = 23;
-    public const int Level = 24;
-    public const int LevelTransitionDelay = 25;
-    public const int MoveInput = 26;
-    public const int NestedView = 27;
-    public const int NestedViewContainer = 28;
-    public const int NextTurn = 29;
-    public const int Position = 30;
-    public const int Resource = 31;
-    public const int SkipTurn = 32;
-    public const int SmoothMove = 33;
-    public const int SmoothMoveInProgress = 34;
-    public const int SpriteCache = 35;
-    public const int TurnBased = 36;
-    public const int TurnOrder = 37;
-    public const int View = 38;
-    public const int ViewContainer = 39;
+    public const int Config = 9;
+    public const int Controllable = 10;
+    public const int Coroutine = 11;
+    public const int CurrentTurnNode = 12;
+    public const int DamageSprite = 13;
+    public const int DeleteOnExit = 14;
+    public const int Destructible = 15;
+    public const int Exit = 16;
+    public const int FoodBag = 17;
+    public const int Food = 18;
+    public const int FoodDamager = 19;
+    public const int GameBoardCache = 20;
+    public const int GameBoard = 21;
+    public const int GameBoardElement = 22;
+    public const int GameOver = 23;
+    public const int GridPositions = 24;
+    public const int Level = 25;
+    public const int LevelTransitionDelay = 26;
+    public const int MoveInput = 27;
+    public const int NestedView = 28;
+    public const int NestedViewContainer = 29;
+    public const int NextTurn = 30;
+    public const int Position = 31;
+    public const int Resource = 32;
+    public const int SkipTurn = 33;
+    public const int SmoothMove = 34;
+    public const int SmoothMoveInProgress = 35;
+    public const int SpriteCache = 36;
+    public const int TurnBased = 37;
+    public const int TurnOrder = 38;
+    public const int View = 39;
+    public const int ViewContainer = 40;
 
-    public const int TotalComponents = 40;
+    public const int TotalComponents = 41;
 
     public static readonly string[] componentNames = {
         "ActiveTurnBased",
@@ -60,6 +61,7 @@ public static class ComponentIds {
         "AudioDeathSource",
         "AudioPickupSource",
         "AudioWalkSource",
+        "Config",
         "Controllable",
         "Coroutine",
         "CurrentTurnNode",
@@ -103,6 +105,7 @@ public static class ComponentIds {
         typeof(AudioDeathSourceComponent),
         typeof(AudioPickupSourceComponent),
         typeof(AudioWalkSourceComponent),
+        typeof(ConfigComponent),
         typeof(ControllableComponent),
         typeof(CoroutineComponent),
         typeof(CurrentTurnNodeComponent),
