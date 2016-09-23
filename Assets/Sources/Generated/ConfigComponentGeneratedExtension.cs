@@ -12,7 +12,7 @@ namespace Entitas {
 
         public bool hasConfig { get { return HasComponent(ComponentIds.Config); } }
 
-        public Entity AddConfig(int newColumns, int newRows, int newFoodCountMin, int newFoodCountMax, int newWallCountMin, int newWallCountMax, int newEnemyCountMultiplier, int newFoodPoints, int newSodaPoints, int newEnemy1Dmg, int newEnemy2Dmg) {
+        public Entity AddConfig(int newColumns, int newRows, int newFoodCountMin, int newFoodCountMax, int newWallCountMin, int newWallCountMax, int newEnemyCountMultiplier, int newFoodPoints, int newSodaPoints, int newEnemy1Dmg, int newEnemy2Dmg, float newTurnDelay) {
             var component = CreateComponent<ConfigComponent>(ComponentIds.Config);
             component.columns = newColumns;
             component.rows = newRows;
@@ -25,10 +25,11 @@ namespace Entitas {
             component.sodaPoints = newSodaPoints;
             component.enemy1Dmg = newEnemy1Dmg;
             component.enemy2Dmg = newEnemy2Dmg;
+            component.turnDelay = newTurnDelay;
             return AddComponent(ComponentIds.Config, component);
         }
 
-        public Entity ReplaceConfig(int newColumns, int newRows, int newFoodCountMin, int newFoodCountMax, int newWallCountMin, int newWallCountMax, int newEnemyCountMultiplier, int newFoodPoints, int newSodaPoints, int newEnemy1Dmg, int newEnemy2Dmg) {
+        public Entity ReplaceConfig(int newColumns, int newRows, int newFoodCountMin, int newFoodCountMax, int newWallCountMin, int newWallCountMax, int newEnemyCountMultiplier, int newFoodPoints, int newSodaPoints, int newEnemy1Dmg, int newEnemy2Dmg, float newTurnDelay) {
             var component = CreateComponent<ConfigComponent>(ComponentIds.Config);
             component.columns = newColumns;
             component.rows = newRows;
@@ -41,6 +42,7 @@ namespace Entitas {
             component.sodaPoints = newSodaPoints;
             component.enemy1Dmg = newEnemy1Dmg;
             component.enemy2Dmg = newEnemy2Dmg;
+            component.turnDelay = newTurnDelay;
             ReplaceComponent(ComponentIds.Config, component);
             return this;
         }
@@ -57,22 +59,22 @@ namespace Entitas {
 
         public bool hasConfig { get { return configEntity != null; } }
 
-        public Entity SetConfig(int newColumns, int newRows, int newFoodCountMin, int newFoodCountMax, int newWallCountMin, int newWallCountMax, int newEnemyCountMultiplier, int newFoodPoints, int newSodaPoints, int newEnemy1Dmg, int newEnemy2Dmg) {
+        public Entity SetConfig(int newColumns, int newRows, int newFoodCountMin, int newFoodCountMax, int newWallCountMin, int newWallCountMax, int newEnemyCountMultiplier, int newFoodPoints, int newSodaPoints, int newEnemy1Dmg, int newEnemy2Dmg, float newTurnDelay) {
             if (hasConfig) {
                 throw new EntitasException("Could not set config!\n" + this + " already has an entity with ConfigComponent!",
                     "You should check if the pool already has a configEntity before setting it or use pool.ReplaceConfig().");
             }
             var entity = CreateEntity();
-            entity.AddConfig(newColumns, newRows, newFoodCountMin, newFoodCountMax, newWallCountMin, newWallCountMax, newEnemyCountMultiplier, newFoodPoints, newSodaPoints, newEnemy1Dmg, newEnemy2Dmg);
+            entity.AddConfig(newColumns, newRows, newFoodCountMin, newFoodCountMax, newWallCountMin, newWallCountMax, newEnemyCountMultiplier, newFoodPoints, newSodaPoints, newEnemy1Dmg, newEnemy2Dmg, newTurnDelay);
             return entity;
         }
 
-        public Entity ReplaceConfig(int newColumns, int newRows, int newFoodCountMin, int newFoodCountMax, int newWallCountMin, int newWallCountMax, int newEnemyCountMultiplier, int newFoodPoints, int newSodaPoints, int newEnemy1Dmg, int newEnemy2Dmg) {
+        public Entity ReplaceConfig(int newColumns, int newRows, int newFoodCountMin, int newFoodCountMax, int newWallCountMin, int newWallCountMax, int newEnemyCountMultiplier, int newFoodPoints, int newSodaPoints, int newEnemy1Dmg, int newEnemy2Dmg, float newTurnDelay) {
             var entity = configEntity;
             if (entity == null) {
-                entity = SetConfig(newColumns, newRows, newFoodCountMin, newFoodCountMax, newWallCountMin, newWallCountMax, newEnemyCountMultiplier, newFoodPoints, newSodaPoints, newEnemy1Dmg, newEnemy2Dmg);
+                entity = SetConfig(newColumns, newRows, newFoodCountMin, newFoodCountMax, newWallCountMin, newWallCountMax, newEnemyCountMultiplier, newFoodPoints, newSodaPoints, newEnemy1Dmg, newEnemy2Dmg, newTurnDelay);
             } else {
-                entity.ReplaceConfig(newColumns, newRows, newFoodCountMin, newFoodCountMax, newWallCountMin, newWallCountMax, newEnemyCountMultiplier, newFoodPoints, newSodaPoints, newEnemy1Dmg, newEnemy2Dmg);
+                entity.ReplaceConfig(newColumns, newRows, newFoodCountMin, newFoodCountMax, newWallCountMin, newWallCountMax, newEnemyCountMultiplier, newFoodPoints, newSodaPoints, newEnemy1Dmg, newEnemy2Dmg, newTurnDelay);
             }
 
             return entity;

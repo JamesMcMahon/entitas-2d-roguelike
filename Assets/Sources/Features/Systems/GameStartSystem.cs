@@ -23,7 +23,8 @@ public class GameStartSystem : IInitializeSystem, ISetPool
             DefaultConfigConstants.FOOD_POINTS,
             DefaultConfigConstants.SODA_POINTS,
             DefaultConfigConstants.ENEMY1_DMG,
-            DefaultConfigConstants.ENEMY2_DMG
+            DefaultConfigConstants.ENEMY2_DMG,
+            DefaultConfigConstants.TURN_DELAY
         );
     }
 }

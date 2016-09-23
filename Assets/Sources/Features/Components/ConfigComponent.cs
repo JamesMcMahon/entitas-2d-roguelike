@@ -15,4 +15,5 @@ public class ConfigComponent : IComponent
     public int sodaPoints;
     public int enemy1Dmg;
     public int enemy2Dmg;
+    public float turnDelay;
 }

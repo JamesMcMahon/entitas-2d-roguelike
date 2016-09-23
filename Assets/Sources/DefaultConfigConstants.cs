@@ -11,4 +11,5 @@
     public const int SODA_POINTS = 20;
     public const int ENEMY1_DMG = 10;
     public const int ENEMY2_DMG = 20;
+    public const float TURN_DELAY = 0.1f;
 }

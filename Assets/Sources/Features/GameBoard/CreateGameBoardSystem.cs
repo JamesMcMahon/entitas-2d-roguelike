@@ -130,10 +130,10 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
             int dmg = enemy1 ? config.enemy1Dmg : config.enemy2Dmg;
 
             // start at 1 because 0 is reserved for player
-            e.AddTurnBased(i + 1, 0.1f)
+            e.AddTurnBased(i + 1, config.turnDelay)
              .IsAIMove(true)
              .AddFoodDamager(dmg)
-             .AddSmoothMove(0.1f)
+             .AddSmoothMove(config.turnDelay)
              .AddAudioAttackSource(Audio.scavengers_enemy1, Audio.scavengers_enemy2);
         });
 
@@ -151,9 +151,9 @@ public class CreateGameBoardSystem : IInitializeSystem, IReactiveSystem, ISetPoo
             .IsGameBoardElement(true)
             .IsDeleteOnExit(true)
             .AddPosition(0, 0)
-            .AddSmoothMove(0.1f)
+            .AddSmoothMove(config.turnDelay)
             .IsControllable(true)
-            .AddTurnBased(0, 0.1f)
+            .AddTurnBased(0, config.turnDelay)
             .IsAIMoveTarget(true)
             .AddAudioAttackSource(Audio.scavengers_chop1, Audio.scavengers_chop2)
             .AddAudioDeathSource(Audio.scavengers_die)
