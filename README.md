@@ -21,7 +21,11 @@ Entitas and demonstrate the Entity Component System style of architecture.
 Entity Component System (ECS) is an architectural pattern for game development that
 allows for a high degree of flexibility and maintainability.
 
-Articles on ECS:
+I gave a talk on ECS at a game developer meetup:
+
+[![thumbnail](ecs-talk-thumb.png)](https://www.youtube.com/watch?v=jQEXETwgPDs)
+
+Additional articles on ECS:
 
 * [What is an entity system framework for game development?](http://www.richardlord.net/blog/what-is-an-entity-framework)
 * [Wikipedia Article](https://en.wikipedia.org/wiki/Entity_component_system)
