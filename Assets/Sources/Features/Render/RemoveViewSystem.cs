@@ -2,24 +2,34 @@ using Entitas;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RemoveViewSystem : IReactiveSystem, ISetPool, IEnsureComponents
+public class RemoveViewSystem : ReactiveSystem<PoolEntity>
 {
-    TriggerOnEvent IReactiveSystem.trigger
+    public RemoveViewSystem(Contexts contexts)
+        : base(contexts.pool)
     {
-        get { return Matcher.Resource.OnEntityRemoved(); }
+        contexts.pool.GetGroup(PoolMatcher.View).OnEntityRemoved += OnEntityRemoved;
     }
 
-    IMatcher IEnsureComponents.ensureComponents
+    protected override bool Filter(PoolEntity entity)
     {
-        get { return Matcher.View; }
+        return entity.hasView;
     }
 
-    void ISetPool.SetPool(Pool pool)
+    protected override ICollector<PoolEntity> GetTrigger(IContext<PoolEntity> context)
     {
-        pool.GetGroup(Matcher.View).OnEntityRemoved += OnEntityRemoved;
+        return new Collector<PoolEntity>(
+            new []
+            { 
+                context.GetGroup(PoolMatcher.Resource),
+            },
+            new []
+            { 
+                GroupEvent.Removed
+            }
+        );    
     }
 
-    void IReactiveExecuteSystem.Execute(List<Entity> entities)
+    protected override void Execute(List<PoolEntity> entities)
     {
         Debug.Log("RemoveViewSystem");
 
@@ -29,7 +39,8 @@ public class RemoveViewSystem : IReactiveSystem, ISetPool, IEnsureComponents
         }
     }
 
-    void OnEntityRemoved(Group group, Entity entity, int index, IComponent component)
+    void OnEntityRemoved(IGroup<PoolEntity> group, Entity entity, int index,
+                         IComponent component)
     {
         var viewComponent = (ViewComponent)component;
         var gameObject = viewComponent.gameObject;

@@ -1,23 +1,27 @@
-﻿using Entitas;
+using Entitas;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RenderPositionSystem : IReactiveSystem, IExcludeComponents
+public class RenderPositionSystem : ReactiveSystem<PoolEntity>
 {
-    IMatcher IExcludeComponents.excludeComponents
+    public RenderPositionSystem(Contexts contexts)
+        : base(contexts.pool)
     {
-        get { return Matcher.SmoothMove; }
     }
 
-    TriggerOnEvent IReactiveSystem.trigger
+    protected override bool Filter(PoolEntity entity)
     {
-        get
-        {
-            return Matcher.AllOf(Matcher.Position, Matcher.View).OnEntityAdded();
-        }
+        return !entity.hasSmoothMove;
     }
 
-    void IReactiveExecuteSystem.Execute(List<Entity> entities)
+    protected override ICollector<PoolEntity> GetTrigger(IContext<PoolEntity> context)
+    {
+        return context.CreateCollector(Matcher<PoolEntity>.AllOf(
+            PoolMatcher.Position,
+            PoolMatcher.View));
+    }
+
+    protected override void Execute(List<PoolEntity> entities)
     {
         foreach (var e in entities)
         {

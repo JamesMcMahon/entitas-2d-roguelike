@@ -1,18 +1,17 @@
-﻿using Entitas;
+using Entitas;
 using System.Collections;
 using UnityEngine;
 
-public class SmoothMoveSystem : IExecuteSystem, ISetPool
+public class SmoothMoveSystem : IExecuteSystem
 {
-    Pool pool;
-    Group smoothMoveGroup;
+    readonly IGroup<PoolEntity> smoothMoveGroup;
 
-    void ISetPool.SetPool(Pool pool)
+    public SmoothMoveSystem(Contexts contexts)
     {
-        this.pool = pool;
-        smoothMoveGroup = pool.GetGroup(Matcher.AllOf(Matcher.View,
-                                                      Matcher.Position,
-                                                      Matcher.SmoothMove));
+        smoothMoveGroup = contexts.pool.GetGroup(Matcher<PoolEntity>.AllOf(
+            PoolMatcher.View,
+            PoolMatcher.Position,
+            PoolMatcher.SmoothMove));
     }
 
     void IExecuteSystem.Execute()
@@ -36,7 +35,7 @@ public class SmoothMoveSystem : IExecuteSystem, ISetPool
         }
     }
 
-    static IEnumerator SmoothMovement(Entity entity)
+    static IEnumerator SmoothMovement(PoolEntity entity)
     {
         var gameObject = entity.view.gameObject;
         var transform = gameObject.transform;

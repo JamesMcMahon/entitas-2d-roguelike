@@ -1,9 +1,10 @@
-﻿using Entitas;
-using Entitas.CodeGenerator;
+using Entitas;
+using Entitas.CodeGeneration.Attributes;
 using System.Collections.Generic;
 using UnityEngine;
 
-[SingleEntity]
+[Pool]
+[Unique]
 public class NestedViewContainerComponent : IComponent
 {
     public IDictionary<string, Transform> value;

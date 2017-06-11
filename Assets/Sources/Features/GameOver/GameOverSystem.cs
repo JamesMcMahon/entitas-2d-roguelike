@@ -1,21 +1,27 @@
-﻿using Entitas;
+using Entitas;
 using System.Collections.Generic;
 
-public class GameOverSystem : IReactiveSystem, ISetPool
+public class GameOverSystem : ReactiveSystem<PoolEntity>
 {
-    Pool pool;
+    readonly PoolContext pool;
 
-    TriggerOnEvent IReactiveSystem.trigger
+    public GameOverSystem(Contexts contexts)
+        : base(contexts.pool)
     {
-        get { return Matcher.FoodBag.OnEntityAdded(); }
+        pool = contexts.pool;
     }
 
-    void ISetPool.SetPool(Pool pool)
+    protected override bool Filter(PoolEntity entity)
     {
-        this.pool = pool;
+        return true;
     }
 
-    void IReactiveExecuteSystem.Execute(List<Entity> entities)
+    protected override ICollector<PoolEntity> GetTrigger(IContext<PoolEntity> context)
+    {
+        return context.CreateCollector(PoolMatcher.FoodBag);
+    }
+
+    protected override void Execute(List<PoolEntity> entities)
     {
         if (!pool.isGameOver && pool.hasFoodBag && pool.foodBag.points <= 0)
         {

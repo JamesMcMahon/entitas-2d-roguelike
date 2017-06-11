@@ -35,7 +35,9 @@ public class InputController : MonoBehaviour
         if (horizontal != 0 || vertical != 0)
         {
             var movement = ToMovement(horizontal, vertical);
-            Pools.pool.ReplaceMoveInput(movement).IsDeleteOnExit(true);
+            var pool = Contexts.sharedInstance.pool;
+            pool.ReplaceMoveInput(movement);
+            pool.moveInputEntity.isDeleteOnExit = true;
         }
     }
 

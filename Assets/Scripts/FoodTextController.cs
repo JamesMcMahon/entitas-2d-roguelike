@@ -11,8 +11,8 @@ public class FoodTextController : MonoBehaviour
     {
         label = GetComponent<Text>();
 
-        var pool = Pools.pool;
-        pool.GetGroup(Matcher.FoodBag).OnEntityAdded += 
+        var pool = Contexts.sharedInstance.pool;
+        pool.GetGroup(PoolMatcher.FoodBag).OnEntityAdded += 
             (group, entity, index, component) => UpdateFood(entity.foodBag.points);
         if (pool.hasFoodBag)
         {

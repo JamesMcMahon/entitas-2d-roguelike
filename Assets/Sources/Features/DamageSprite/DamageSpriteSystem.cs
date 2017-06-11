@@ -1,28 +1,34 @@
-﻿using Entitas;
+using Entitas;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DamageSpriteSystem : ISetPool, IReactiveSystem, IInitializeSystem
+public class DamageSpriteSystem : ReactiveSystem<PoolEntity>, IInitializeSystem
 {
-    Pool pool;
+    readonly PoolContext pool;
 
-    TriggerOnEvent IReactiveSystem.trigger
+    public DamageSpriteSystem(Contexts contexts)
+        : base(contexts.pool)
     {
-        get
-        {
-            return Matcher.AllOf(Matcher.DamageSprite, Matcher.View,
-                                 Matcher.Destructible).OnEntityAdded();
-        }
+        pool = contexts.pool;
     }
 
-    void ISetPool.SetPool(Pool pool)
+    protected override bool Filter(PoolEntity entity)
     {
-        this.pool = pool;
+        return entity.hasDamageSprite && entity.hasView
+        && entity.hasDamageSprite;
+    }
+
+    protected override ICollector<PoolEntity> GetTrigger(IContext<PoolEntity> context)
+    {
+        return context.CreateCollector(Matcher<PoolEntity>.AllOf(
+                PoolMatcher.DamageSprite,
+                PoolMatcher.View,
+                PoolMatcher.Destructible));
     }
 
     void IInitializeSystem.Initialize()
     {
-        UnityEngine.Sprite[] sprites = Resources.LoadAll<UnityEngine.Sprite>("Sprites");
+        var sprites = Resources.LoadAll<UnityEngine.Sprite>("Sprites");
         var spriteCache = new Dictionary<string, UnityEngine.Sprite>();
         foreach (var s in sprites)
         {
@@ -31,7 +37,7 @@ public class DamageSpriteSystem : ISetPool, IReactiveSystem, IInitializeSystem
         pool.SetSpriteCache(spriteCache);
     }
 
-    void IReactiveExecuteSystem.Execute(List<Entity> entities)
+    protected override void Execute(List<PoolEntity> entities)
     {
         var spriteCache = pool.spriteCache.value;
         foreach (var e in entities)

@@ -1,15 +1,24 @@
-﻿public class AudioAttackSourceComponent : AudioComponent
+[Pool]
+public class AudioComponent : BaseAudioComponent
 {
 }
 
-public class AudioDeathSourceComponent : AudioComponent
+[Pool]
+public class AudioAttackSourceComponent : BaseAudioComponent
 {
 }
 
-public class AudioPickupSourceComponent : AudioComponent
+[Pool]
+public class AudioDeathSourceComponent : BaseAudioComponent
 {
 }
 
-public class AudioWalkSourceComponent : AudioComponent
+[Pool]
+public class AudioPickupSourceComponent : BaseAudioComponent
+{
+}
+
+[Pool]
+public class AudioWalkSourceComponent : BaseAudioComponent
 {
 }

@@ -1,5 +1,5 @@
-﻿using Entitas;
-using Entitas.Unity.VisualDebugging;
+using Entitas;
+using Entitas.VisualDebugging.Unity;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
@@ -17,7 +17,8 @@ public class GameController : MonoBehaviour
         }
 
         Debug.Log("Starting GameController using seed " + Random.seed);
-        systems = CreateSystems(Pools.pool);
+        var contexts = Contexts.sharedInstance;
+        systems = CreateSystems(contexts);
         systems.Initialize();
     }
 
@@ -26,39 +27,39 @@ public class GameController : MonoBehaviour
         systems.Execute();
     }
 
-    static Systems CreateSystems(Pool pool)
+    static Systems CreateSystems(Contexts contexts)
     {
         Systems systems;
 
 #if (UNITY_EDITOR)
-        systems = new DebugSystems();
+        systems = new DebugSystems("Editor");
 #else
         systems = new Systems();
 #endif
 
         systems
-            .Add(pool.CreateSystem<CoroutineSystem>())
-            .Add(pool.CreateSystem<GameStartSystem>())
-            .Add(pool.CreateSystem<GameOverSystem>())
+            .Add(new CoroutineSystem(contexts))
+            .Add(new GameStartSystem(contexts))
+            .Add(new GameOverSystem(contexts))
 
-            .Add(pool.CreateSystem<GameBoardCacheSystem>())
-            .Add(pool.CreateSystem<CreateGameBoardSystem>())
+            .Add(new GameBoardCacheSystem(contexts))
+            .Add(new CreateGameBoardSystem(contexts))
 
-            .Add(pool.CreateSystem<TurnSystem>())
-            .Add(pool.CreateSystem<InputSystem>())
-            .Add(pool.CreateSystem<AIMoveSystem>())
+            .Add(new TurnSystem(contexts))
+            .Add(new InputSystem(contexts))
+            .Add(new AIMoveSystem(contexts))
 
-            .Add(pool.CreateSystem<ExitSystem>())
-            .Add(pool.CreateSystem<FoodSystem>())
-            .Add(pool.CreateSystem<DestructibleSystem>())
+            .Add(new ExitSystem(contexts))
+            .Add(new FoodSystem(contexts))
+            .Add(new DestructibleSystem(contexts))
 
-            // Render
-            .Add(pool.CreateSystem<AnimationSystem>())
-            .Add(pool.CreateSystem<DamageSpriteSystem>())
-            .Add(pool.CreateSystem<RemoveViewSystem>())
-            .Add(pool.CreateSystem<AddViewSystem>())
-            .Add(pool.CreateSystem<RenderPositionSystem>())
-            .Add(pool.CreateSystem<SmoothMoveSystem>());
+        // Render
+            .Add(new AnimationSystem(contexts))
+            .Add(new DamageSpriteSystem(contexts))
+            .Add(new RemoveViewSystem(contexts))
+            .Add(new AddViewSystem(contexts))
+            .Add(new RenderPositionSystem(contexts))
+            .Add(new SmoothMoveSystem(contexts));
 
         return systems;
     }

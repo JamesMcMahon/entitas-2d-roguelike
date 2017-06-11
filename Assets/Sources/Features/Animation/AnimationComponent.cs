@@ -1,5 +1,6 @@
-﻿using Entitas;
+using Entitas;
 
+[Pool]
 public class AnimationComponent : IComponent
 {
     public Animation animation;

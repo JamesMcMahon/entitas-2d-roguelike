@@ -1,9 +1,9 @@
-﻿using Entitas;
+using Entitas;
 using ICollectionOfEntityExtensions;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InputSystem : IReactiveSystem, ISetPool
+public class InputSystem : ReactiveSystem<PoolEntity>
 {
     static Vector2 ToVector(Movement movement)
     {
@@ -21,19 +21,25 @@ public class InputSystem : IReactiveSystem, ISetPool
         }
     }
 
-    Pool pool;
+    readonly PoolContext pool;
 
-    TriggerOnEvent IReactiveSystem.trigger
+    public InputSystem(Contexts contexts)
+        : base(contexts.pool)
     {
-        get { return Matcher.MoveInput.OnEntityAdded(); }
+        pool = contexts.pool;
     }
 
-    void ISetPool.SetPool(Pool pool)
+    protected override bool Filter(PoolEntity entity)
     {
-        this.pool = pool;
+        return true;
     }
 
-    void IReactiveExecuteSystem.Execute(List<Entity> entities)
+    protected override ICollector<PoolEntity> GetTrigger(IContext<PoolEntity> context)
+    {
+        return context.CreateCollector(PoolMatcher.MoveInput);
+    }
+
+    protected override void Execute(List<PoolEntity> entities)
     {
         if (pool.isGameOver
             || pool.isLevelTransitionDelay
@@ -55,7 +61,7 @@ public class InputSystem : IReactiveSystem, ISetPool
         int newX = currentPos.x + (int)movementPos.x;
         int newY = currentPos.y + (int)movementPos.y;
 
-        ICollection<Entity> existing;
+        ICollection<PoolEntity> existing;
         bool canMove = pool.IsGameBoardPositionOpen(newX, newY, out existing);
         if (existing != null)
         {
@@ -71,17 +77,17 @@ public class InputSystem : IReactiveSystem, ISetPool
         controllable.isActiveTurnBased = false;
     }
 
-    bool PrepareMove(Entity player, ICollection<Entity> entitiesInSpot)
+    bool PrepareMove(PoolEntity player, ICollection<PoolEntity> entitiesInSpot)
     {
-        if (entitiesInSpot.ContainsComponent(ComponentIds.AIMove))
+        if (entitiesInSpot.ContainsComponent(PoolComponentsLookup.AIMove))
         {
             // enemy there, can't do anything
             return false;
         }
 
         // handle walls
-        Entity wall = null;
-        if (entitiesInSpot.ContainsComponent(ComponentIds.Destructible, out wall))
+        PoolEntity wall = null;
+        if (entitiesInSpot.ContainsComponent(PoolComponentsLookup.Destructible, out wall))
         {
             wall.DamageDestructible();
             pool.PlayAudio(player.audioAttackSource);

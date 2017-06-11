@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AddViewSystem : ISetPool, IInitializeSystem, IReactiveSystem
+public class AddViewSystem : ReactiveSystem<PoolEntity>, IInitializeSystem
 {
     static Transform GetNested(string name,
                                Transform viewContainer,
@@ -20,16 +20,22 @@ public class AddViewSystem : ISetPool, IInitializeSystem, IReactiveSystem
         return nestedView;
     }
 
-    Pool pool;
+    readonly PoolContext pool;
 
-    void ISetPool.SetPool(Pool pool)
+    public AddViewSystem(Contexts contexts)
+        : base(contexts.pool)
     {
-        this.pool = pool;
+        pool = contexts.pool;
     }
 
-    TriggerOnEvent IReactiveSystem.trigger
+    protected override bool Filter(PoolEntity entity)
     {
-        get { return Matcher.Resource.OnEntityAdded(); }
+        return entity.hasResource;
+    }
+
+    protected override ICollector<PoolEntity> GetTrigger(IContext<PoolEntity> context)
+    {
+        return context.CreateCollector(PoolMatcher.Resource);
     }
 
     void IInitializeSystem.Initialize()
@@ -38,7 +44,7 @@ public class AddViewSystem : ISetPool, IInitializeSystem, IReactiveSystem
         pool.SetNestedViewContainer(new Dictionary<string, Transform>());
     }
 
-    void IReactiveExecuteSystem.Execute(List<Entity> entities)
+    protected override void Execute(List<PoolEntity> entities)
     {
         var viewContainer = pool.viewContainer.value;
         var nestedViewContainer = pool.nestedViewContainer.value;

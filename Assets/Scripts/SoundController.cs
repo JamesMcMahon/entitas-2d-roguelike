@@ -9,13 +9,18 @@ public class SoundController : MonoBehaviour
     public float lowPitchRange = .95f;
     public float highPitchRange = 1.05f;
 
+    PoolContext pool;
+
     void Start()
     {
-        Pools.pool.GetGroup(Matcher.Audio).OnEntityAdded += OnAudioAdded;
-        Pools.pool.GetGroup(Matcher.GameOver).OnEntityAdded += (group, entity, index, component) => StopMusic();
+        pool = Contexts.sharedInstance.pool;
+
+        pool.GetGroup(PoolMatcher.Audio).OnEntityAdded += OnAudioAdded;
+        pool.GetGroup(PoolMatcher.GameOver).OnEntityAdded += (group, entity, index, component) => StopMusic();
     }
 
-    void OnAudioAdded(Group group, Entity entity, int index, IComponent component)
+    void OnAudioAdded(IGroup<PoolEntity> group, PoolEntity entity, int index,
+                      IComponent component)
     {
         var audioComponent = (AudioComponent)component;
         var audioName = audioComponent.clipNames.Random();
@@ -27,7 +32,7 @@ public class SoundController : MonoBehaviour
         }
 
         // only play once
-        Pools.pool.DestroyEntity(entity);
+        pool.DestroyEntity(entity);
     }
 
     void Play(AudioClip clip, bool randomize = false)

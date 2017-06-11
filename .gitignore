@@ -31,3 +31,8 @@ Assets/UnityVS/
 # Local plugins
 Assets/Local/
 Assets/Local.meta
+
+# Entitas specific
+MigrationAssistant.exe*
+Assets/Libraries/Entitas-Unity/Documentation*
+

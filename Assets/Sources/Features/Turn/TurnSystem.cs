@@ -1,4 +1,4 @@
-﻿using Entitas;
+using Entitas;
 using ICollectionExtensions;
 using LinkedListExtensions;
 using UnityEngine;
@@ -6,38 +6,48 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class TurnSystem : IInitializeSystem, IMultiReactiveSystem, ISetPool
+public class TurnSystem : ReactiveSystem<PoolEntity>, IInitializeSystem
 {
-    Pool pool;
-    Group turnBasedEntities;
+    readonly PoolContext pool;
+    IGroup<PoolEntity> turnBasedEntities;
 
-    void ISetPool.SetPool(Pool pool)
+    public TurnSystem(Contexts contexts)
+        : base(contexts.pool)
     {
-        this.pool = pool;
+        pool = contexts.pool;
 
-        turnBasedEntities = pool.GetGroup(Matcher.TurnBased);
+        turnBasedEntities = pool.GetGroup(PoolMatcher.TurnBased);
         turnBasedEntities.OnEntityAdded += OnTurnBasedEntityAdded;
         turnBasedEntities.OnEntityRemoved += OnTurnBasedEntityRemoved;
     }
 
+    protected override bool Filter(PoolEntity entity)
+    {
+        return true;
+    }
+
+    protected override ICollector<PoolEntity> GetTrigger(IContext<PoolEntity> context)
+    {
+        return new Collector<PoolEntity>(
+            new []
+            { 
+                context.GetGroup(PoolMatcher.ActiveTurnBased),
+                context.GetGroup(PoolMatcher.NextTurn)
+            },
+            new []
+            { 
+                GroupEvent.Removed,
+                GroupEvent.Added
+            }
+        );
+    }
+
     void IInitializeSystem.Initialize()
     {
-        pool.SetTurnOrder(new LinkedList<Entity>());
+        pool.SetTurnOrder(new LinkedList<PoolEntity>());
     }
 
-    TriggerOnEvent[] IMultiReactiveSystem.triggers
-    {
-        get
-        {
-            return new []
-            {
-                Matcher.ActiveTurnBased.OnEntityRemoved(),
-                Matcher.NextTurn.OnEntityAdded()
-            };
-        }
-    }
-
-    void IReactiveExecuteSystem.Execute(List<Entity> entities)
+    protected override void Execute(List<PoolEntity> entities)
     {
         if (pool.isNextTurn)
         {
@@ -68,8 +78,8 @@ public class TurnSystem : IInitializeSystem, IMultiReactiveSystem, ISetPool
             .AddCoroutine(ActivateAfterDelay(delayTime, nextEntity));
     }
 
-    void OnTurnBasedEntityAdded(Group group, Entity entity, int index,
-                                IComponent component)
+    void OnTurnBasedEntityAdded(IGroup<PoolEntity> group, PoolEntity entity,
+                                int index, IComponent component)
     {
         var turnOrder = pool.turnOrder.value;
         if (turnOrder.Empty())
@@ -98,8 +108,8 @@ public class TurnSystem : IInitializeSystem, IMultiReactiveSystem, ISetPool
         turnOrder.AddAfter(match, entity);
     }
 
-    void OnTurnBasedEntityRemoved(Group group, Entity entity, int index,
-                                  IComponent component)
+    void OnTurnBasedEntityRemoved(IGroup<PoolEntity> group, PoolEntity entity,
+                                  int index, IComponent component)
     {
         // get previous node before removing node from list
         var currentTurnNode = pool.currentTurnNode.value;
@@ -118,7 +128,7 @@ public class TurnSystem : IInitializeSystem, IMultiReactiveSystem, ISetPool
         }
     }
 
-    IEnumerator ActivateAfterDelay(float delayTime, Entity nextEntity)
+    IEnumerator ActivateAfterDelay(float delayTime, PoolEntity nextEntity)
     {
         var timer = delayTime;
         while (timer > 0)

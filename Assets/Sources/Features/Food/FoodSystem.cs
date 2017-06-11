@@ -1,33 +1,38 @@
-﻿using Entitas;
+using Entitas;
 using ICollectionOfEntityExtensions;
 using System.Collections.Generic;
 
-public class FoodSystem : IReactiveSystem, ISetPool
+public class FoodSystem : ReactiveSystem<PoolEntity>
 {
-    Pool pool;
+    readonly PoolContext pool;
 
-    TriggerOnEvent IReactiveSystem.trigger
+    public FoodSystem(Contexts contexts)
+        : base(contexts.pool)
     {
-        get
-        {
-            return Matcher.AllOf(Matcher.Controllable, Matcher.Position).OnEntityAdded();
-        }
+        pool = contexts.pool;
     }
 
-    void ISetPool.SetPool(Pool pool)
+    protected override bool Filter(PoolEntity entity)
     {
-        this.pool = pool;
+        return true;
     }
 
-    void IReactiveExecuteSystem.Execute(List<Entity> entities)
+    protected override ICollector<PoolEntity> GetTrigger(IContext<PoolEntity> context)
+    {
+        return context.CreateCollector(Matcher<PoolEntity>.AllOf(
+                PoolMatcher.Controllable,
+                PoolMatcher.Position));
+    }
+
+    protected override void Execute(List<PoolEntity> entities)
     {
         var position = pool.controllableEntity.position;
-        ICollection<Entity> posEntities;
+        ICollection<PoolEntity> posEntities;
         pool.IsGameBoardPositionOpen(position, out posEntities);
 
-        Entity food;
+        PoolEntity food;
         if (posEntities != null &&
-            posEntities.ContainsComponent(ComponentIds.Food, out food))
+            posEntities.ContainsComponent(PoolComponentsLookup.Food, out food))
         {
             int points = food.food.points;
             pool.PlayAudio(food.audioPickupSource);

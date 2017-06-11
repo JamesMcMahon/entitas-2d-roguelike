@@ -1,7 +1,8 @@
-﻿using Entitas;
-using Entitas.CodeGenerator;
+using Entitas;
+using Entitas.CodeGeneration.Attributes;
 
-[SingleEntity]
+[Pool]
+[Unique]
 public class ActiveTurnBasedComponent : IComponent
 {
 }

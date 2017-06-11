@@ -1,9 +1,10 @@
-﻿using Entitas;
-using Entitas.CodeGenerator;
+using Entitas;
+using Entitas.CodeGeneration.Attributes;
 using System.Collections.Generic;
 
-[SingleEntity]
+[Pool]
+[Unique]
 public class TurnOrderComponent : IComponent
 {
-    public LinkedList<Entity> value;
+    public LinkedList<PoolEntity> value;
 }

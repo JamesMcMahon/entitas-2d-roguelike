@@ -1,5 +1,6 @@
-﻿using Entitas;
+using Entitas;
 
+[Pool]
 public class DestructibleComponent : IComponent
 {
     public int hp;

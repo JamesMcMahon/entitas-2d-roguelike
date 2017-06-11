@@ -5,9 +5,9 @@ namespace ICollectionOfEntityExtensions
 {
     public static class ICollectionOfEntityExtensions
     {
-        public static bool ContainsComponent(this ICollection<Entity> entities,
+        public static bool ContainsComponent(this ICollection<PoolEntity> entities,
                                              int componentId, 
-                                             out Entity entity)
+                                             out PoolEntity entity)
         {
             foreach (var e in entities)
             {
@@ -21,10 +21,10 @@ namespace ICollectionOfEntityExtensions
             return false;
         }
 
-        public static bool ContainsComponent(this ICollection<Entity> entities,
+        public static bool ContainsComponent(this ICollection<PoolEntity> entities,
                                              int componentId)
         {
-            Entity unused = null;
+            PoolEntity unused = null;
             return entities.ContainsComponent(componentId, out unused);
         }
     }

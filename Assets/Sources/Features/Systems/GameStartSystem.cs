@@ -1,12 +1,12 @@
-﻿using Entitas;
+using Entitas;
 
-public class GameStartSystem : IInitializeSystem, ISetPool
+public class GameStartSystem : IInitializeSystem
 {
-    Pool pool;
+    readonly PoolContext pool;
 
-    void ISetPool.SetPool(Pool pool)
+    public GameStartSystem(Contexts contexts)
     {
-        this.pool = pool;
+        pool = contexts.pool;
     }
 
     void IInitializeSystem.Initialize()

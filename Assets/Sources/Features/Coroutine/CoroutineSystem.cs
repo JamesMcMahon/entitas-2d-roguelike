@@ -1,14 +1,14 @@
-﻿using Entitas;
+using Entitas;
 
-public class CoroutineSystem : ISetPool, IExecuteSystem
+public class CoroutineSystem : IExecuteSystem
 {
-    Pool pool;
-    Group coroutinesGroup;
+    readonly PoolContext pool;
+    readonly IGroup<PoolEntity> coroutinesGroup;
 
-    void ISetPool.SetPool(Pool pool)
+    public CoroutineSystem(Contexts contexts)
     {
-        this.pool = pool;
-        coroutinesGroup = pool.GetGroup(Matcher.Coroutine);
+        pool = contexts.pool;
+        coroutinesGroup = pool.GetGroup(PoolMatcher.Coroutine);
     }
 
     void IExecuteSystem.Execute()

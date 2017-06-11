@@ -1,24 +1,28 @@
-﻿using Entitas;
+using Entitas;
 using System.Collections.Generic;
 
-public class DestructibleSystem : IReactiveSystem, ISetPool
+public class DestructibleSystem : ReactiveSystem<PoolEntity>
 {
-    Pool pool;
+    readonly PoolContext pool;
 
-    void ISetPool.SetPool(Pool pool)
+    public DestructibleSystem(Contexts contexts)
+        : base(contexts.pool)
     {
-        this.pool = pool;
+        pool = contexts.pool;
     }
 
-    TriggerOnEvent IReactiveSystem.trigger
+    protected override bool Filter(PoolEntity entity)
     {
-        get
-        {
-            return Matcher.Destructible.OnEntityAdded();
-        }
+        return entity.hasDestructible;
     }
 
-    void IReactiveExecuteSystem.Execute(List<Entity> entities)
+    protected override ICollector<PoolEntity> GetTrigger(
+        IContext<PoolEntity> context)
+    {
+        return context.CreateCollector(PoolMatcher.Destructible);
+    }
+
+    protected override void Execute(List<PoolEntity> entities)
     {
         foreach (var e in entities)
         {

@@ -1,5 +1,6 @@
-﻿using Entitas;
+using Entitas;
 
+[Pool]
 public class PositionComponent : IComponent
 {
     public int x;
@@ -7,7 +8,7 @@ public class PositionComponent : IComponent
 
     public override bool Equals(object obj)
     {
-        PositionComponent other = obj as PositionComponent;
+        var other = obj as PositionComponent;
         return other != null && x == other.x && y == other.y;
     }
 

@@ -1,8 +1,9 @@
-﻿using Entitas;
-using Entitas.CodeGenerator;
+using Entitas;
+using Entitas.CodeGeneration.Attributes;
 using UnityEngine;
 
-[SingleEntity]
+[Pool]
+[Unique]
 public class ViewContainerComponent : IComponent
 {
     public Transform value;

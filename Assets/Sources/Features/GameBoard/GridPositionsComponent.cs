@@ -1,9 +1,10 @@
-﻿using Entitas;
-using Entitas.CodeGenerator;
+using Entitas;
+using Entitas.CodeGeneration.Attributes;
 using UnityEngine;
 using System.Collections.Generic;
 
-[SingleEntity]
+[Pool]
+[Unique]
 public class GridPositionsComponent : IComponent
 {
     public IList<Vector2> value;

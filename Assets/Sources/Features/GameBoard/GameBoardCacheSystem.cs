@@ -1,22 +1,23 @@
-﻿using ArrayExtensions;
+using ArrayExtensions;
 using Entitas;
 using System.Collections.Generic;
 
-public class GameBoardCacheSystem : ISystem, ISetPool
+public class GameBoardCacheSystem : ISystem
 {
-    Pool pool;
+    readonly PoolContext pool;
 
-    void ISetPool.SetPool(Pool pool)
+    public GameBoardCacheSystem(Contexts contexts)
     {
-        this.pool = pool;
+        pool = contexts.pool;
 
-        var gameBoard = pool.GetGroup(Matcher.GameBoard);
+        var gameBoard = pool.GetGroup(PoolMatcher.GameBoard);
         gameBoard.OnEntityAdded += (group, entity, index, component) =>
             CreateNewGameBoardCache((GameBoardComponent)component);
         gameBoard.OnEntityUpdated += (group, entity, index, previousComponent, newComponent) =>
             CreateNewGameBoardCache((GameBoardComponent)newComponent);
 
-        var gameBoardElements = pool.GetGroup(Matcher.AllOf(Matcher.GameBoardElement, Matcher.Position));
+        var gameBoardElements = pool.GetGroup(Matcher<PoolEntity>.AllOf(
+                                        PoolMatcher.GameBoardElement, PoolMatcher.Position));
         gameBoardElements.OnEntityAdded += OnGameBoardElementAdded;
         gameBoardElements.OnEntityUpdated += OnGameBoardElementUpdated;
         gameBoardElements.OnEntityRemoved += OnGameBoardElementRemoved;
@@ -24,8 +25,10 @@ public class GameBoardCacheSystem : ISystem, ISetPool
 
     void CreateNewGameBoardCache(GameBoardComponent gameBoard)
     {
-        var grid = new ICollection<Entity>[gameBoard.columns, gameBoard.rows];
-        var entities = pool.GetEntities(Matcher.AllOf(Matcher.GameBoardElement, Matcher.Position));
+        var grid = new ICollection<PoolEntity>[gameBoard.columns, gameBoard.rows];
+        var entities = pool.GetEntities(Matcher<PoolEntity>.AllOf(
+                               PoolMatcher.GameBoardElement,
+                               PoolMatcher.Position));
         foreach (var e in entities)
         {
             var pos = e.position;
@@ -34,7 +37,8 @@ public class GameBoardCacheSystem : ISystem, ISetPool
         pool.ReplaceGameBoardCache(grid);
     }
 
-    void OnGameBoardElementAdded(Group group, Entity entity, int index, IComponent component)
+    void OnGameBoardElementAdded(IGroup<PoolEntity> group, PoolEntity entity,
+                                 int index, IComponent component)
     {
         var grid = pool.gameBoardCache.grid;
         var pos = entity.position;
@@ -42,8 +46,9 @@ public class GameBoardCacheSystem : ISystem, ISetPool
         pool.ReplaceGameBoardCache(grid);
     }
 
-    void OnGameBoardElementUpdated(Group group, Entity entity, int index, 
-                                   IComponent previousComponent, IComponent newComponent)
+    void OnGameBoardElementUpdated(IGroup<PoolEntity> group, PoolEntity entity,
+                                   int index, IComponent previousComponent,
+                                   IComponent newComponent)
     {
         var prevPos = (PositionComponent)previousComponent;
         var newPos = (PositionComponent)newComponent;
@@ -53,7 +58,8 @@ public class GameBoardCacheSystem : ISystem, ISetPool
         pool.ReplaceGameBoardCache(grid);
     }
 
-    void OnGameBoardElementRemoved(Group group, Entity entity, int index, IComponent component)
+    void OnGameBoardElementRemoved(IGroup<PoolEntity> group, PoolEntity entity,
+                                   int index, IComponent component)
     {
         var pos = component as PositionComponent;
         if (pos == null)

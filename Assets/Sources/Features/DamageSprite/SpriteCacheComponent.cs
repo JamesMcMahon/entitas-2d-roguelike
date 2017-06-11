@@ -1,8 +1,9 @@
-﻿using Entitas;
-using Entitas.CodeGenerator;
+using Entitas;
+using Entitas.CodeGeneration.Attributes;
 using System.Collections.Generic;
 
-[SingleEntity]
+[Pool]
+[Unique]
 public class SpriteCacheComponent : IComponent
 {
     public IDictionary<string, UnityEngine.Sprite> value;

@@ -1,18 +1,32 @@
-﻿using Entitas;
+using Entitas;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnimationSystem : IReactiveSystem
+public class AnimationSystem : ReactiveSystem<PoolEntity>
 {
-    TriggerOnEvent IReactiveSystem.trigger
+    public AnimationSystem(Contexts contexts)
+        : base(contexts.pool)
     {
-        get
-        {
-            return Matcher.AllOf(Matcher.Animation, Matcher.View).OnEntityAdded();
-        }
     }
 
-    void IReactiveExecuteSystem.Execute(List<Entity> entities)
+    protected override bool Filter(PoolEntity entity)
+    {
+        return entity.hasAnimation && entity.hasView;
+    }
+
+    protected override ICollector<PoolEntity> GetTrigger(IContext<PoolEntity> context)
+    {
+        return new Collector<PoolEntity>(
+            new []
+            { context.GetGroup(Matcher<PoolEntity>.AllOf(
+                        PoolMatcher.Animation,
+                        PoolMatcher.View))
+            },
+            new [] { GroupEvent.Added }
+        );
+    }
+
+    protected override void Execute(List<PoolEntity> entities)
     {
         foreach (var e in entities)
         {

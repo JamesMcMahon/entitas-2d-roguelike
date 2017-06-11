@@ -1,26 +1,31 @@
-﻿using Entitas;
+using Entitas;
 using System.Collections.Generic;
 
-public class ExitSystem : IReactiveSystem, ISetPool
+public class ExitSystem : ReactiveSystem<PoolEntity>
 {
-    Pool pool;
-    Group exitGroup;
+    readonly PoolContext pool;
+    readonly IGroup<PoolEntity> exitGroup;
 
-    TriggerOnEvent IReactiveSystem.trigger
+    public ExitSystem(Contexts contexts)
+        : base(contexts.pool)
     {
-        get
-        {
-            return Matcher.AllOf(Matcher.Controllable, Matcher.Position).OnEntityAdded();
-        }
+        pool = contexts.pool;
+        exitGroup = pool.GetGroup(PoolMatcher.Exit);
     }
 
-    void ISetPool.SetPool(Pool pool)
+    protected override bool Filter(PoolEntity entity)
     {
-        this.pool = pool;
-        exitGroup = pool.GetGroup(Matcher.Exit);
+        return true;
     }
 
-    void IReactiveExecuteSystem.Execute(List<Entity> entities)
+    protected override ICollector<PoolEntity> GetTrigger(IContext<PoolEntity> context)
+    {
+        return context.CreateCollector(Matcher<PoolEntity>.AllOf(
+                PoolMatcher.Controllable,
+                PoolMatcher.Position));
+    }
+
+    protected override void Execute(List<PoolEntity> entities)
     {
         var controllablePos = pool.controllableEntity.position;
 

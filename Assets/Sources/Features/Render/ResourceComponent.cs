@@ -1,5 +1,6 @@
-﻿using Entitas;
+using Entitas;
 
+[Pool]
 public class ResourceComponent : IComponent
 {
     public Prefab prefab;

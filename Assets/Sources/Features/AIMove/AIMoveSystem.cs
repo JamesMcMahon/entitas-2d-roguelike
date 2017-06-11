@@ -1,39 +1,42 @@
-﻿using Entitas;
+using Entitas;
 using ICollectionExtensions;
 using ICollectionOfEntityExtensions;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AIMoveSystem : IReactiveSystem, ISetPool, IEnsureComponents
+public class AIMoveSystem : ReactiveSystem<PoolEntity>
 {
-    Pool pool;
+    readonly PoolContext pool;
 
-    IMatcher IEnsureComponents.ensureComponents
+    public AIMoveSystem(Contexts contexts)
+        : base(contexts.pool)
     {
-        get
-        {
-            return Matcher.AllOf(Matcher.ActiveTurnBased, Matcher.AIMove,
-                                 Matcher.TurnBased, Matcher.Position);
-        }
+        pool = contexts.pool;
     }
 
-    TriggerOnEvent IReactiveSystem.trigger
+    protected override bool Filter(PoolEntity entity)
     {
-        get
-        {
-            return Matcher.AllOf(Matcher.ActiveTurnBased, Matcher.AIMove,
-                                 Matcher.TurnBased, Matcher.Position).OnEntityAdded();
-        }
+        return entity.isActiveTurnBased && entity.isAIMove
+        && entity.hasTurnBased && entity.hasPosition;
     }
 
-    void ISetPool.SetPool(Pool pool)
+    protected override ICollector<PoolEntity> GetTrigger(IContext<PoolEntity> context)
     {
-        this.pool = pool;
+        return new Collector<PoolEntity>(
+            new []
+            { context.GetGroup(Matcher<PoolEntity>.AllOf(
+                        PoolMatcher.ActiveTurnBased,
+                        PoolMatcher.AIMove,
+                        PoolMatcher.TurnBased,
+                        PoolMatcher.Position))
+            },
+            new [] { GroupEvent.Added }
+        );
     }
 
-    void IReactiveExecuteSystem.Execute(List<Entity> entities)
+    protected override void Execute(List<PoolEntity> entities)
     {
-        var movingEntity = entities.SingleEntity();
+        var movingEntity = entities.SingleEntity<PoolEntity>();
         var target = pool.aIMoveTargetEntity;
         if (target == null || !target.hasPosition)
         {
@@ -57,7 +60,7 @@ public class AIMoveSystem : IReactiveSystem, ISetPool, IEnsureComponents
         int newX = currentPos.x + moveX;
         int newY = currentPos.y + moveY;
 
-        ICollection<Entity> existing;
+        ICollection<PoolEntity> existing;
         bool canMove = pool.IsGameBoardPositionOpen(newX, newY, out existing);
         if (existing != null && !existing.Empty())
         {
@@ -75,12 +78,12 @@ public class AIMoveSystem : IReactiveSystem, ISetPool, IEnsureComponents
     }
 
 
-    bool PrepareMove(Entity enemy, ICollection<Entity> entitiesInSpot)
+    bool PrepareMove(PoolEntity enemy, ICollection<PoolEntity> entitiesInSpot)
     {
         // handle player
-        Entity player;
+        PoolEntity player;
         if (enemy.hasFoodDamager &&
-            entitiesInSpot.ContainsComponent(ComponentIds.Controllable, out player))
+            entitiesInSpot.ContainsComponent(PoolComponentsLookup.Controllable, out player))
         {
             pool.AddToFoodBag(-enemy.foodDamager.points);
             pool.PlayAudio(enemy.audioAttackSource);
@@ -91,7 +94,7 @@ public class AIMoveSystem : IReactiveSystem, ISetPool, IEnsureComponents
         }
 
         if (entitiesInSpot.Count == 1 &&
-            entitiesInSpot.ContainsComponent(ComponentIds.Food))
+            entitiesInSpot.ContainsComponent(PoolComponentsLookup.Food))
         {
             return true;
         }

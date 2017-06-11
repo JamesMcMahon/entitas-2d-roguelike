@@ -1,5 +1,4 @@
-﻿using Entitas;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class LevelTextController : MonoBehaviour
@@ -12,7 +11,7 @@ public class LevelTextController : MonoBehaviour
 
     int currentLevel;
     Image levelImage;
-    Pool pool;
+    PoolContext pool;
 
     // Use awake to ensure that this fires before the systems boot
     // otherwise it misses the initial level set
@@ -20,14 +19,14 @@ public class LevelTextController : MonoBehaviour
     {
         levelImage = GetComponent<Image>();
 
-        pool = Pools.pool;
-        pool.GetGroup(Matcher.Level).OnEntityAdded += (group, entity, index, component) =>
+        pool = Contexts.sharedInstance.pool;
+        pool.GetGroup(PoolMatcher.Level).OnEntityAdded += (group, entity, index, component) =>
         {
             currentLevel = pool.level.level;
             pool.isLevelTransitionDelay = true;
             Invoke("ShowLevelImage", displayDelay);
         };
-        pool.GetGroup(Matcher.GameOver).OnEntityAdded += (group, entity, index, component) =>
+        pool.GetGroup(PoolMatcher.GameOver).OnEntityAdded += (group, entity, index, component) =>
         {
             GameOver();
         };
