@@ -34,5 +34,6 @@ Assets/Local.meta
 
 # Entitas specific
 MigrationAssistant.exe*
+Assets/Libraries/Entitas-Unity/CodeGenerator*
 Assets/Libraries/Entitas-Unity/Documentation*
 
